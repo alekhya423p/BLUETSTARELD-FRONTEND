@@ -1,0 +1,54 @@
+{
+  "message": "Data fetched successfully",
+  "data": {
+    "drivers": [
+      {
+        "id": "62e2a8de4686006881da3156",
+        "vehicleId": "62e2a8dd4686006881da3153",
+        "vehicleNumber": "98112",
+        "driverId": "62e0e4afb3c7a63ebcc6b837",
+        "driverName": "Driver One",
+        "coDriverId": "",
+        "coDriverName": "",
+        "coDriverEventCode": "",
+        "odometer": 90089,
+        "fuelLevel": "20",
+        "speed": 30,
+        "online": true,
+        "timestamp": "2022-07-02T00:03:22.582Z",
+        "eventCode": "DS_OFF",
+        "location": "0.85 mi N of Warminster Heights, PA",
+        "state": "UT",
+        "coordinates": {
+          "lat": 40.20050198,
+          "lng": -75.08738681
+         },
+        "times": {"break": 28793, "drive": 39593, "shift": 53994, "cycle": 287993, "recap": 0}
+      },
+      {
+        "id": "62e2a8de4686006881da3156",
+        "vehicleId": "62e2a8dd4686006881da3153",
+        "vehicleNumber": "98112",
+        "driverId": "62e0e4afb3c7a63ebcc6b837",
+        "driverName": "Driver Tow",
+        "coDriverId": "",
+        "coDriverName": "",
+        "coDriverEventCode": "",
+        "odometer": 90089,
+        "fuelLevel": "20",
+        "speed": 30,
+        "online": true,
+        "timestamp": "2022-07-02T00:03:22.582Z",
+        "eventCode": "DS_OFF",
+        "location": "0.85 mi N of Warminster Heights, PA",
+        "state": "UT",
+        "coordinates": {
+          "lat": 40.20050198,
+          "lng": -76.08738681
+         },
+        "times": {"break": 28793, "drive": 39593, "shift": 53994, "cycle": 287993, "recap": 0}
+      }
+    ]
+  },
+  "success": true
+}

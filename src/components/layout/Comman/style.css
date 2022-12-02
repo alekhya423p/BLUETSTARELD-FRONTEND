@@ -1,0 +1,32 @@
+.Tooltip {
+    position: relative;
+    font-size: inherit;
+}
+.Tooltip .text {
+    display: block;
+    align-items: center;
+    padding: 2px 0;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+}
+.Tooltip:hover .title {
+    display: flex;
+    flex-direction: column;
+    z-index: 100;
+    position: absolute;
+    left: 50%;
+    top: -30%;
+    -webkit-transform: translate(-50%,-100%);
+    transform: translate(-50%,-100%);
+    padding: 2px 8px;
+    font-size: inherit;
+    border: 1px solid #008b8b;
+    background: #000;
+    border-radius: 3px;
+}
+.Tooltip .title {
+    display: none;
+    text-transform: none;
+    transition: all .4s linear;
+}

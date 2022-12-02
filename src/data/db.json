@@ -1,0 +1,278 @@
+{
+    "hosViolations": [
+        {
+            "key": "All",
+            "value": "all"
+        },
+        {
+            "key": "No Violation",
+            "value": "no_violation"
+        },
+        {
+            "key": "Hos Violation",
+            "value": "hos_violation"
+        }
+    ],
+    "mannerErrors": [
+        {
+            "key": "All",
+            "value": "all"
+        },
+        {
+            "key": "No Form & Manner Errors",
+            "value": "no_error"
+        },
+        {
+            "key": "Certification Missing",
+            "value": "no_certification"
+        },
+        {
+            "key": "Trailer Number Missing",
+            "value": "no_trailer_number"
+        },
+        {
+            "key": "Shipping Document Missing",
+            "value": "no_shipping_doc"
+        }
+    ],
+    "cargoType": [
+        {
+            "key": "Passenger",
+            "value": "PASSENGER"
+        },
+        {
+            "key": "Property",
+            "value": "PROPERTY"
+        }
+    ],
+    "driverStatus": [
+        {
+            "key": "Off Duty",
+            "value": "Off Duty"
+        },
+        {
+            "key": "On Duty",
+            "value": "On Duty"
+        },
+        {
+            "key": "Break",
+            "value": "Break"
+        },
+        {
+            "key": "Driving",
+            "value": "Driving"
+        },
+        {
+            "key": "Sleeper",
+            "value": "Sleeper"
+        },
+        {
+            "key": "Yard Move",
+            "value": "Yard Move"
+        }
+    ],
+    "dutyStatus": [
+        {
+            "key": "All",
+            "value": "all"
+        },
+        {
+            "key": "Driving",
+            "value": "DS_D"
+        },
+        {
+            "key": "On Duty",
+            "value": "DS_ON"
+        },
+        {
+            "key": "Sleeper",
+            "value": "DS_SB"
+        },
+        {
+            "key": "Off Duty",
+            "value": "DS_OFF"
+        },
+        {
+            "key": "Personal",
+            "value": "DR_IND_PC"
+        },
+        {
+            "key": "Yard Move",
+            "value": "DR_IND_YM"
+        }
+    ],
+    "dutyStatusTechnician": [
+        {
+            "key": "All",
+            "value": "all"
+        },
+        {
+            "key": "Driving",
+            "value": "DS_D",
+            "description": "DS_D"
+        },
+        {
+            "key": "On Duty",
+            "description": "DS_D",
+            "value": "DS_ON"
+        },
+        {
+            "key": "Sleeper",
+            "description": "DS_D",
+            "value": "DS_SB"
+        },
+        {
+            "key": "Off Duty",
+            "description": "DS_D",
+            "value": "DS_OFF"
+        },
+        {
+            "key": "Personal Use",
+            "description": "DS_D",
+            "value": "DR_IND_PC"
+        },
+        {
+            "key": "Yard Move",
+            "description": "DS_D",
+            "value": "DR_IND_YM"
+        },
+        {
+            "key": "Login",
+            "description": "DS_D",
+            "value": "DR_IND_YM"
+        },
+        {
+            "key": "Logout",
+            "description": "DS_D",
+            "value": "DR_IND_YM"
+        },
+        {
+            "key": "Intermediate w/CLP",
+            "description": "DS_D",
+            "value": "DR_IND_YM"
+        },
+        {
+            "key": "Intermediate w/RLP",
+            "description": "DS_D",
+            "value": "DR_IND_YM"
+        },
+        {
+            "key": "Certification (1)",
+            "description": "DS_D",
+            "value": "DR_IND_YM"
+        },
+        {
+            "key": "Certification (2)",
+            "description": "DS_D",
+            "value": "DR_IND_YM"
+        },
+        {
+            "key": "Certification (3)",
+            "description": "DS_D",
+            "value": "DR_IND_YM"
+        },
+        {
+            "key": "Certification (4)",
+            "description": "DS_D",
+            "value": "DR_IND_YM"
+        },
+        {
+            "key": "Certification (5)",
+            "description": "DS_D",
+            "value": "DR_IND_YM"
+        },
+        {
+            "key": "Certification (6)",
+            "description": "DS_D",
+            "value": "DR_IND_YM"
+        },
+        {
+            "key": "Certification (7)",
+            "description": "DS_D",
+            "value": "DR_IND_YM"
+        },
+        {
+            "key": "Certification (8)",
+            "description": "DS_D",
+            "value": "DR_IND_YM"
+        },
+        {
+            "key": "Certification (>= 9)",
+            "description": "DS_D",
+            "value": "DR_IND_YM"
+        },
+        {
+            "key": "Engine Power-up w/CLP",
+            "description": "DS_D",
+            "value": "DR_IND_YM"
+        },
+        {
+            "key": "Engine Power-up w/RLP",
+            "description": "DS_D",
+            "value": "DR_IND_YM"
+        },
+        {
+            "key": "Engine Shut-down w/CLP",
+            "description": "DS_D",
+            "value": "DR_IND_YM"
+        },
+        {
+            "key": "Engine Shut-down w/RLP",
+            "description": "DS_D",
+            "value": "DR_IND_YM"
+        }
+    ],
+    "restartHours" : [
+        {
+            "key" : "34 Hour Restart",
+            "value": "34H"
+        },
+        {
+            "key": "24 Hour Restart",
+            "value": "24H"
+        }
+    ],
+    "timeZone" : [
+        {
+            "title": "EST",
+            "key": "Eastern Time Zone",
+            "value": "America/New_York"
+        },
+        {
+            "title": "CST",
+            "key": "Central Standard Time",
+            "value": "America/Chicago"
+        },
+        {
+            "title": "MST",
+            "key": "Mountain Standard Time",
+            "value": "America/Denver"
+        },
+        {
+            "title": "PST",
+            "key": "Pacific Standard Time",
+            "value": "America/Los_Angeles"
+        },
+        {
+            "title": "UTC",
+            "key": "Coordinated Universal Time",
+            "value": "UTC"
+        },
+        {
+            "title": "AST",
+            "key": "Atlantic Standard Time",
+            "value": "America/Bermuda"
+        },
+        {
+            "title": "AKST",
+            "key": "Alaskan Standard Time",
+            "value": "America/Anchorage"
+        },
+        {
+            "title": "HST",
+            "key": "Hawaii Standard Time",
+            "value": "Pacific/Honolulu"
+        }
+
+    ]
+}

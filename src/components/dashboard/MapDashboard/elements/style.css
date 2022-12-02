@@ -1,0 +1,89 @@
+.leaflet-tooltip {
+    position: absolute;
+    padding: 6px;
+    background-color: #fff;
+    border: 1px solid #fff;
+    border-radius: 3px;
+    color: #222;
+    white-space: nowrap;
+    -webkit-user-select: none;
+    -moz-user-select: none;
+    -ms-user-select: none;
+    user-select: none;
+    pointer-events: none;
+    box-shadow: 0 1px 3px rgb(0 0 0 / 40%);
+}
+.InfoBox {
+    /* margin: 5px; */
+    border-radius: 6px;
+    box-shadow: 0 2px 4px -1px rgba(0,0,0,.2),0 4px 5px 0 rgba(0,0,0,.14),0 1px 10px 0 rgba(0,0,0,.12)!important;
+    background-color: hsla(0,0%,100%,.7);
+    padding: 5px;
+}
+.infoBox {
+    transform: translateZ(0px);
+    position: absolute;
+    visibility: visible;
+    overflow: auto;
+    width: 97px;
+    left: -0.777096px;
+    top: -1.51008px;
+}
+.InfoBox .IB_it {
+    margin: 0;
+    font-size: 11px;
+    line-height: 14px;
+    color: #000;
+    font-weight: 600;
+}
+
+.IW_it:not(:last-child) {
+    margin-bottom: 5px;
+}
+.IW_it {
+    display: flex;
+    justify-content: space-between;
+}
+.IW_it .left {
+    flex: 1 1;
+    font-weight: 600;
+    color: #008b8b!important;
+}
+.IW_it .right {
+    flex: 1 1;
+    text-transform: capitalize;
+    font-weight: 700;
+    word-spacing: 1px;
+}
+.IW_it span {
+    display: inline-block;
+    font-family: Montserrat,sans-serif;
+    margin-top: 3px;
+    font-size: 11px;
+    letter-spacing: 1.2px;
+    align-self: flex-start;
+    line-height: 14px;
+    color: #000;
+}
+
+.leaflet-tooltip {
+    position: absolute;
+    padding: 6px;
+    background-color: #fff;
+    border: 1px solid #fff;
+    border-radius: 3px;
+    color: #222;
+    white-space: nowrap;
+    -webkit-user-select: none;
+    -moz-user-select: none;
+    -ms-user-select: none;
+    user-select: none;
+    pointer-events: none;
+    box-shadow: 0 1px 3px rgb(0 0 0 / 40%);
+}
+.myTooltip {
+    padding: 3px 5px;
+}
+.leaflet-tooltip-bottom {
+    margin-top: 6px;
+}

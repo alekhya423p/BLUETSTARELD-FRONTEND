@@ -1,0 +1,97 @@
+{
+  "message": "Data fetched successfully",
+  "data": {
+    "locationHistory": {
+        "id": "62e7ac18fcb15e9e187b211e",
+        "vehicleId": "62e0e2ef3e9cf2fcde40f591",
+        "vehicleNumber": "3007",
+        "status": "IN_MOTION",
+        "startTime": "2022-08-01T00:00:00.000Z",
+        "endTime": "",
+        "locations": [
+          {
+            "eventCode": "PERIODIC",
+            "eventDate": "2022-08-01T06:45:00.000Z",
+            "periodicType": "1",
+            "coordinates": {
+              "lat": 26.862184,
+              "lng": 75.673792
+            },
+            "state": "UT",
+            "speed": "60",
+            "heading": "20",
+            "odometer": "30",
+            "engineHours": "40000",
+            "fuelLevel": "90",
+            "location": "Jaipy"
+          },
+          {
+            "eventCode": "PERIODIC",
+            "eventDate": "2022-08-01T06:45:00.000Z",
+            "periodicType": "1",
+            "coordinates": {
+              "lat": 26.845778,
+              "lng": 75.622597
+            },
+            "state": "UT",
+            "speed": "60",
+            "heading": "20",
+            "odometer": "30",
+            "engineHours": "40000",
+            "fuelLevel": "90",
+            "location": "Jaipy"
+          },
+          {
+            "eventCode": "PERIODIC",
+            "eventDate": "2022-08-01T06:45:00.000Z",
+            "periodicType": "1",
+            "coordinates": {
+              "lat": 26.830111,
+              "lng": 75.573004
+            },
+            "state": "UT",
+            "speed": "60",
+            "heading": "20",
+            "odometer": "30",
+            "engineHours": "40000",
+            "fuelLevel": "90",
+            "location": "Jaipy"
+          },
+          {
+            "eventCode": "PERIODIC",
+            "eventDate": "2022-08-01T06:45:00.000Z",
+            "periodicType": "1",
+            "coordinates": {
+              "lat": 26.825821,
+              "lng": 75.560894
+            },
+            "state": "UT",
+            "speed": "60",
+            "heading": "20",
+            "odometer": "30",
+            "engineHours": "40000",
+            "fuelLevel": "90",
+            "location": "Jaipy"
+          },
+          {
+            "eventCode": "PERIODIC",
+            "eventDate": "2022-08-01T06:45:00.000Z",
+            "periodicType": "1",
+            "coordinates": {
+              "lat": 26.822202,
+              "lng": 75.543664
+            },
+            "state": "UT",
+            "speed": "60",
+            "heading": "20",
+            "odometer": "30",
+            "engineHours": "40000",
+            "fuelLevel": "90",
+            "location": "Jaipy"
+          }
+         
+        ]
+      }
+  },
+  "success": true
+}

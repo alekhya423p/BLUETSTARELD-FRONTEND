@@ -1,0 +1,14 @@
+.collapse .simplebar-offset{
+  right: 0px; bottom: 0px;
+}
+
+.simplebar-content-wrapper-collapse{
+  height: 100%; overflow: hidden;
+}
+.simplebar-offset-expand{
+  right: -15px; bottom: 0px;
+}
+.expand .simplebar-content-wrapper{
+  height: 100%; overflow: hidden scroll;
+}
+

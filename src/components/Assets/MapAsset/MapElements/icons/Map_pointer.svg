@@ -1,0 +1,9 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE svg PUBLIC "-//W3C//DTD SVG 1.1//EN" "http://www.w3.org/Graphics/SVG/1.1/DTD/svg11.dtd">
+<svg width="10px" height="10px" viewBox="-100 -100 200 200" version="1.1" xmlns="http://www.w3.org/2000/svg">
+  <g stroke="none" fill="rgb(0,0,0)">
+    <path d="M -100,0 A 100,100,0,0,0, 0,100 A 100,100,0,0,0, 100,0 A 100,100,0,0,0, 0,-100 A 100,100,0,0,0, -100,0
+         L  -80,0 A  80,80 ,0,0,1, 0,-80 A  80,80 ,0,0,1,  80,0 A  80,80 ,0,0,1, 0,80   A  80,80 ,0,0,1,  -80,0 z" />
+  <circle cx="0" cy="0" r="30" />
+  </g>
+</svg>

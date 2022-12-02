@@ -1,0 +1,60 @@
+ /* INTER_NORMAL_PRECISION */
+  
+ .INTER_NORMAL_PRECISION {
+    position: absolute;
+    -webkit-transform: translateX(-3px);
+    transform: translateX(-3px);
+    background-color: #2cbd68;
+    height: 6px;
+    width: 6px;
+    border-radius: 50%;
+    z-index: 11;
+    cursor: pointer;
+    -webkit-transform-origin: center left;
+    transform-origin: center left;
+    transition: -webkit-transform .2s ease-in-out;
+    transition: transform .2s ease-in-out;
+    transition: transform .2s ease-in-out, -webkit-transform .2s ease-in-out
+}
+
+.INTER_NORMAL_PRECISION:hover {
+    -webkit-transform: scale(3) translateX(-3px);
+    transform: scale(3) translateX(-3px)
+}
+
+.INTER_NORMAL_PRECISION:hover .Inter_time {
+    display: inline-block;
+    -webkit-transform: scale(.333) translateX(-138%) translateY(60%);
+    transform: scale(.333) translateX(-138%) translateY(60%)
+}
+
+.INTER_NORMAL_PRECISION .Inter_time {
+    display: none;
+    position: absolute;
+    top: -24px;
+    padding-top: 4px;
+    padding-bottom: 5px;
+    border: 1.5px solid #acacac;
+    border-radius: 4px;
+    width: 120px;
+    background-color: #fff;
+    transition: all .2s ease-in-out;
+    text-align: center;
+    font-size: 14px;
+    line-height: 14px;
+    font-weight: 700;
+    letter-spacing: 2px;
+    -webkit-transform-origin: center;
+    transform-origin: center
+}
+
+.INTER_NORMAL_PRECISION.hoveredInter {
+    -webkit-transform: scale(3) translateX(-3px);
+    transform: scale(3) translateX(-3px)
+}
+
+.INTER_NORMAL_PRECISION.hoveredInter .Inter_time {
+    display: inline-block;
+    -webkit-transform: scale(.333) translateX(-138%) translateY(60%);
+    transform: scale(.333) translateX(-138%) translateY(60%)
+}
