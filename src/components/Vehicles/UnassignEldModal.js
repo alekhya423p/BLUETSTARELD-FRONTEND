@@ -22,9 +22,9 @@ const UnassignEldModal = (props) => {
 
 
 	useEffect(() => {
-		// console.log(props.data)
+
 		if (props.data && props.data.mode === "edit") {
-			// console.log("my props", props);
+		
 			// setValue('startTime', props.data.start)
 			// setValue('vehicleId', props.data.vehicleId)
 			// setInputDriver(props.data.start);

@@ -252,12 +252,10 @@ export const updateProfile = userData => async (dispatch, getState) => {
 export const updatePassword = userData => async (dispatch, getState) => {
     try {
         dispatch({ type: actionTypes.UPDATE_PASSWORD_REQUEST })
-
         const { data } = await api.changePassword(userData)
         dispatch({ type: actionTypes.UPDATE_PASSWORD_SUCCESS, payload: data })
 
-    } catch (err) {
-       
+    } catch (err) {       
         toast.error(err.response.data.message);
         dispatch({ type: actionTypes.UPDATE_PASSWORD_FAIL, payload: err.response.data.message })
     }

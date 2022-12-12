@@ -61,7 +61,6 @@ export const MapDashboard = ({ markers, setMaptypeId }) => {
       defaultCenter={defaultCenter}
       options={{
         mapTypeId: "hybrid",
-        
       }}
       onMapTypeIdChanged={onMapTypeIdChanged}
     >
@@ -75,7 +74,7 @@ export const MapDashboard = ({ markers, setMaptypeId }) => {
              label={mar.label}
              position={mar.position}
              speed={mar.speed}
-             odometr={mar.odometr}
+             odometer={mar.odometer}
              truckNo={mar.truckNo}
            />
          ))}{" "}

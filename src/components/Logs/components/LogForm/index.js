@@ -1,7 +1,9 @@
 import React from "react";
 // import moment from "moment-timezone";
 
-const LogForm = ({ data }) => {
+const LogForm = ({ data, logs }) => {
+
+    console.log(data, 'data', logs);
 
     return (
         <div className="row log-forms-row mt-3">
@@ -15,7 +17,7 @@ const LogForm = ({ data }) => {
                         <li><small>CDL State:</small> <b>{data?.driver ? <span  className="">{data?.driver.licenseState}</span> : <span className="text-danger">N/A</span>}</b></li>
                         <li><small>Exempt Driver Status:</small> <b className="">{data?.driver ? data?.driver.exempt ? 'Yes' : 'No': ''}</b></li>
                         <li><small>Co-Driver:</small> <b>{data?.driver ? data?.driver.coDriverName : <span className="text-danger">N/A</span>}</b></li>
-                        <li><small>Co-Driver ID:</small> <b >{data?.driver ? data?.driver.coDriverId : <span className="text-danger">N/A</span>}</b></li>
+                        <li><small>Co-Driver ID:</small> <b >{data?.driver ? data?.driver.coDriverUsername : <span className="text-danger">N/A</span>}</b></li>
                     </ul>
                 </div>
             </div>
@@ -25,7 +27,7 @@ const LogForm = ({ data }) => {
                     <ul className="p-0 list-unstyled sm2">
                         <li><small>Vehicle:</small> <b>{data?.vehicle ? data?.vehicle.vehicleNumber : ''}</b><i className="ti ti-send font-size-18 text-success"></i></li>
                         <li><small>VIN:</small><b> {data?.vehicle ? data?.vehicle.vin : ''}</b></li>
-                        <li><small>Odometer:</small> <b>{data?.vehicle ? data?.vehicle.odometr : ''}</b></li>
+                        <li><small>Odometer:</small> <b>{data?.vehicle ? data?.vehicle.odometer : ''}</b></li>
                         <li><small>Distance:</small> <b>{data?.vehicle ? data?.vehicle.distance : ''}</b></li>
                         <li><small>Engine Hours:</small><b> {data?.vehicle ? data?.vehicle.engineHours : ''}</b></li>
                         <li><small>ELD SN (MAC):</small> <b>{data?.vehicle ? data?.vehicle.eldSerialNumber : ''} ({data?.vehicle ? data?.vehicle.eldMacAddress : ''})</b></li>

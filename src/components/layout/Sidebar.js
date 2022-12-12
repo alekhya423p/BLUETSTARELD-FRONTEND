@@ -13,11 +13,13 @@ const Sidebar = (props) => {
     
     const [number , setNumber] = useState(1);
     const { isOpenMobileMenu } = useSelector(state => state.dashboard)
+    const { user } = useSelector((state) => state.auth);
     // const navigate = useNavigate()
     const dispatch = useDispatch()
     const location = useLocation();
     let minimize = localStorage.getItem('minimize');
 
+    var userType =  user && user.user && user.user.userType;
 
     useEffect(() => {
         let menu = (localStorage.getItem("activeMenu")) ? localStorage.getItem("activeMenu") === location.pathname.slice(1) ? localStorage.getItem("activeMenu") : location.pathname.slice(1) : "dashboard" ;
@@ -78,7 +80,7 @@ useEffect(() => {
 
     return (
         // <div className={`vertical-menu ${isOpen ? 'expand' :'collapse'}`}>
-        <div className={(isOpenMobileMenu === "sidebar") ? `vertical-menu showSidebar ${isOpen}` : `vertical-menu  ${isOpen}`}>
+        <div className={userType === "company-administrator" ? (isOpenMobileMenu === "sidebar") ? `vertical-menu showSidebar ${isOpen} company-admin` : `vertical-menu company-admin ${isOpen}` : (isOpenMobileMenu === "sidebar") ? `vertical-menu showSidebar ${isOpen}` : `vertical-menu  ${isOpen}`}>
             <div data-simplebar className="h-100">
                 <div id="sidebar-menu">
                     <ul className="metismenu list-unstyled" id="side-menu">
@@ -104,12 +106,12 @@ useEffect(() => {
 
                         </li>
 
-                        <li className={(inputMenu === "assets") ? "active" : ""} onClick={(e)=>makeActive("assets", e)}>
+                        {/* <li className={(inputMenu === "assets") ? "active" : ""} onClick={(e)=>makeActive("assets", e)}>
                             <Link to="/assets" className="waves-effect">
                                 <i className="ti ti-truck"></i>
                                 <span>Assets</span>
                             </Link>
-                        </li>
+                        </li> */}
 
                         {/* <li>
                             <Link to="" className=" waves-effect">

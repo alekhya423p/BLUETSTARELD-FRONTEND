@@ -109,7 +109,7 @@ export const eldDeviceRemove = (eldData, navigate) => async(dispatch) => {
         toast.success(data.message);
         navigate('/settings/elds')
     }catch (err){
-        console.log(err, 'err')
+        // console.log(err, 'err')
         toast.error(err.response?.data?.message);
         dispatch({ type: actionTypes.REMOVE_ELD_DEVICE_FAIL, payload: err.response?.data?.message })
     }

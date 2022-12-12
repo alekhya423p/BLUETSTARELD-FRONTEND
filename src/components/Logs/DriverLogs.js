@@ -47,13 +47,17 @@ import jsPDF from 'jspdf';
 import pdfMake from 'pdfmake';
 import pdfFonts from 'pdfmake/build/vfs_fonts';
 import htmlToPdfmake from 'html-to-pdfmake';
+// import canvg from "canvg";
+// import logo from "../Logs/Chart/NewChart/logo.svg";
 
 const DriverGraphDetails = ({ history }) => {
 
     const dispatch = useDispatch();
     const { isMinimize, isMode } = useSelector(state => state.dashboard)
     const {driverData, event, loading, pdfLogs } = useSelector(state => state.logs)
-    
+
+    const { user } = useSelector(state => state.auth)
+
     // const driverData = data;
     const childRef = useRef();
     const params = useParams();
@@ -70,22 +74,26 @@ const DriverGraphDetails = ({ history }) => {
     const [transferModal, setTransferModal] = useState(false);
     const [bulkUpdateEventModal, setBulkUpdateEventModal] = useState(false);
     const [compareLogModal, setCompareLogModal] = useState(false);
+    const [isDownload, setIsDownload] = useState(false);
     let finalCheck = {}, count = 0;
     const [inputCheckedCount, setinputCheckedCount] = useState(0);
     const [inputCheckedIds, setinputCheckedIds] = useState([]);
-    // const shouldIShow = true;
-    const shouldIShow = JSON.parse(localStorage.getItem("shouldIShow"));
-    const user = JSON.parse(localStorage.getItem("userInfo"));
-    const tz = user && user.companyInfo && user.companyInfo.timeZoneId? user.companyInfo.timeZoneId: "America/Los_Angeles";
+    const allowedUsersForEventsUpdate = ["system-technician" , "system-administrator", "system-super-admin"]
+    const shouldIShow = true;
+    // const shouldIShow = JSON.parse(localStorage.getItem("shouldIShow"));
+    const userInfo = JSON.parse(localStorage.getItem("userInfo"));
+    const tz = userInfo && userInfo.companyInfo && userInfo.companyInfo.timeZoneId? userInfo.companyInfo.timeZoneId: "America/Los_Angeles";
     const queryString = window.location.pathname.split("/");
     const hash = queryString[queryString.length - 1];
     const id = queryString[queryString.length - 2];
     let convertDate = moment.tz(hash, 'DD/MM/YYYY', tz).format('YYYY-MM-DD')
     const [logDate, setLogDate] = useState(convertDate);
     const date = moment.tz(hash, "DD-MM-YYYY", tz);
+    var userType = user && user.user && user.user.userType;
     // const allow_system_user = false;
-    const allow_system_user = user && user.user && user.user.userType ? (user.user.userType === 'system-technician' || user.user.userType === 'system-administrator') : false;
-    const allow_correction = user && user.user && user.user.userType ? (user.user.userType === 'company-administrator' || user.user.userType === 'company-portal-user') : false;
+    const allow_system_user = user && user.user && user.user.userType ? allowedUsersForEventsUpdate.includes(user.user.userType) : false;
+    const allow_correction = user && user.user && user.user.userType ? 
+    (user.user.userType === 'company-administrator' || user.user.userType === 'company-portal-user') : false;
     const [startDate, setStartDate] = useState(date);
     const [success, setSuccess] = useState(false);
     const [logId, setLogId] = useState('');
@@ -104,6 +112,7 @@ const DriverGraphDetails = ({ history }) => {
     const [isDriverOnline, setIsDriverOnline] = useState(false);
     const [originalLogs, setOriginalLogs] = useState([]);
     const [logs, setLogs] = useState([]);
+    const [isTrue, setIsTrue] = useState(false);
     const [spinData, setSpinData] = useState(null);
     // const [offlineLogs, setOfflineLogs] = useState(null);
     const [prevLog, setPrevLog] = useState(false);
@@ -115,6 +124,7 @@ const DriverGraphDetails = ({ history }) => {
     const [noteError, setNoteError] = useState(null);
     // const [transferWarning, setTransferWarning] = useState(false);
     const [today, setToday] = useState(false);
+
     useEffect(() => {
         dispatch({type: LOAD_GRAPH_LOG_RESET})
         dispatch(getVehicleMaster())
@@ -130,7 +140,7 @@ const DriverGraphDetails = ({ history }) => {
     useEffect(() => {
         if (driverData.logId) setLogId(driverData.logId)
     },[driverData])
-
+    console.log(setIsTrue);
     useEffect(() => {
         let cancel = false;
         let asyncFunc = async () => {
@@ -177,9 +187,7 @@ const DriverGraphDetails = ({ history }) => {
                 } else {
                     setShifts([]);
                 }
-                if (driverData.cycles) {
-                   
-                    
+                if (driverData.cycles) {                  
                     const { startDate, tz } = times();
                     let tempCycles = [];
                     driverData.cycles.forEach((item) => {
@@ -276,14 +284,14 @@ const DriverGraphDetails = ({ history }) => {
                                         }
                                     }
                                 }
-                                // DR_CERT_1 Logs
-                                if (el.status === checkCertifyStatus(el.status)) {
-                                    certs.push({
-                                        point: el.start,
-                                        driver_signature: el.driver_signature,
-                                        status: el.status,
-                                    });
-                                }
+                                // DR_CERT_1 Logs  // commented for certify eents
+                                // if (el.status === checkCertifyStatus(el.status)) {
+                                //     certs.push({
+                                //         point: el.start,
+                                //         driver_signature: el.driver_signature,
+                                //         status: el.status,
+                                //     });
+                                // }
                             }
                             if (checkStatusChart(el.status)) {
                                 lastChartLog = { ...el };
@@ -391,7 +399,7 @@ const DriverGraphDetails = ({ history }) => {
                         preVeh !== veh ||
                         log.status !== prevLog.status ||
                         log.note !== prevLog.note ||
-                        log.odometr !== prevLog.odometr ||
+                        log.odometer !== prevLog.odometer ||
                         log.engine_hours !== prevLog.engine_hours ||
                         log.record_status !== prevLog.record_status ||
                         log.creator !== prevLog.creator ||
@@ -477,7 +485,7 @@ const DriverGraphDetails = ({ history }) => {
                                 start,
                                 end,
                                 address: txtArr[4],
-                                odometr: txtArr[6],
+                                odometer: txtArr[6],
                                 engine_hours: txtArr[7],
                                 note: txtArr[8] && txtArr[8] !== "" ? txtArr[8] : `${status} inserted!!!`,
                             };
@@ -577,7 +585,7 @@ const DriverGraphDetails = ({ history }) => {
             setEventModalTitle('Frozen Event (System Admistrator)')
         }else if(type === 'copy-event') {
             setAddEventTechnicianModal(true);
-            setEventModalTitle('Dublicate Event (System Admistrator)')
+            setEventModalTitle('Duplicate Event (System Admistrator)')
         }else if(type === 'reassign-event') {
             setEventIds([data.id])
             setReassignEventModal(true);
@@ -675,60 +683,186 @@ const DriverGraphDetails = ({ history }) => {
         setReassignEventModal(true);
     }
 
+    // const applyConvolution = (sourceImageData, outputImageData, kernel) => {
+    //     const src = sourceImageData.data;
+    //     const dst = outputImageData.data;
+        
+    //     const srcWidth = sourceImageData.width;
+    //     const srcHeight = sourceImageData.height;
+        
+    //     const side = Math.round(Math.sqrt(kernel.length));
+    //     const halfSide = Math.floor(side / 2);
+        
+    //     // padding the output by the convolution kernel
+    //     const w = srcWidth;
+    //     const h = srcHeight;
+        
+    //     // iterating through the output image pixels
+    //     for (let y = 0; y < h; y++) {
+    //       for (let x = 0; x < w; x++) {
+    //         let r = 0,
+    //           g = 0,
+    //           b = 0,
+    //           a = 0;
+              
+    //         // calculating the weighed sum of the source image pixels that
+    //         // fall under the convolution kernel
+    //         for (let cy = 0; cy < side; cy++) {
+    //           for (let cx = 0; cx < side; cx++) {
+    //             const scy = y + cy - halfSide;
+    //             const scx = x + cx - halfSide;
+                
+    //             if (scy >= 0 && scy < srcHeight && scx >= 0 && scx < srcWidth) {
+    //               let srcOffset = (scy * srcWidth + scx) * 4;
+    //               let wt = kernel[cy * side + cx];
+    //               r += src[srcOffset] * wt;
+    //               g += src[srcOffset + 1] * wt;
+    //               b += src[srcOffset + 2] * wt;
+    //               a += src[srcOffset + 3] * wt;
+    //             }
+    //           }
+    //         }
+            
+    //         const dstOffset = (y * w + x) * 4;
+    //         dst[dstOffset] = r;
+    //         dst[dstOffset + 1] = g;
+    //         dst[dstOffset + 2] = b;
+    //         dst[dstOffset + 3] = a;
+    //       }
+    //     }
+    //     return outputImageData;
+    // }
+    
     const handlePdfDownload = async (e) => {
+
+        setIsDownload(true);
 
         if(pdfLogs){
             var doc = new jsPDF();
+            console.log(doc);  
+            
+            // var svg = document.getElementById('svg-container').innerHTML;
+ 
+            // if (svg)
+            //     svg = svg.replace(/\r?\n|\r/g, '').trim();
 
-            console.log(doc);
+            // var canvasImage = document.createElement('canvas');
+            // var contextImage = canvasImage.getContext('2d');
+
+
+            // contextImage.clearRect(0, 0, canvasImage.width, canvasImage.height);
+            // canvg(canvasImage, svg);
+
+            // var imgData = canvasImage.toDataURL('image/png');
+
+            // Generate PDF
+           
+
+            // const canvasImage = document.createElement("canvas");
+  
+            // const contextImage = canvasImage.getContext("2d");
+                
+            // const canvasImageWidth = 530;
+            // const canvasImageHeight = 180;
+                
+            // canvasImage.width = canvasImageWidth;
+            // canvasImage.height = canvasImageHeight;
+            
+            // contextImage.drawImage(logo, 0, 0, canvasImageWidth, canvasImageHeight);
+            
+            
+            // const sourceImage = contextImage.getImageData(0, 0, canvasImageWidth, canvasImageHeight);
+            
+            // contextImage.putImageData(sourceImage, 0, 0);
+                
+            // canvasImage.toDataURL();            
+            
+            // var svg = document.getElementById('svg-container').innerHTML;
+ 
+            // if (svg)
+            //     svg = svg.replace(/\r?\n|\r/g, '').trim();
+
+            // var canvasImage = document.createElement('canvas');
+            // var contextImage = canvasImage.getContext('2d');
+
+
+            // contextImage.clearRect(0, 0, canvasImage.width, canvasImage.height);
+            // canvg(canvasImage, svg);
+
+            // var imgData = canvasImage.toDataURL('image/png');
+
+            // Generate PDF
+           
+
+            // const canvasImage = document.createElement("canvas");
+  
+            // const contextImage = canvasImage.getContext("2d");
+                
+            // const canvasImageWidth = 530;
+            // const canvasImageHeight = 180;
+                
+            // canvasImage.width = canvasImageWidth;
+            // canvasImage.height = canvasImageHeight;
+            
+            // contextImage.drawImage(logo, 0, 0, canvasImageWidth, canvasImageHeight);
+            
+            
+            // const sourceImage = contextImage.getImageData(0, 0, canvasImageWidth, canvasImageHeight);
+            
+            // contextImage.putImageData(sourceImage, 0, 0);
+                
+            // canvasImage.toDataURL();            
             
             var pdfContent =  pdfLogs?.html;
-
+            
             //get table html
             var htmlObject = document.createElement('div');
+
+            // console.log(htmlObject, 'htmlObject');
             
             htmlObject.innerHTML = pdfContent.toString();
-            return html2canvas(document.querySelector("#graph-chart"),{
-                width: 850,
-                height: 250,
-                scale: 1,
-                windowHeight: 250,
-                windowWidth: 850,
-            }).then(canvas => {
-                return canvas.toDataURL("image/jpeg", 1.0);
-                // var doc = new jsPDF('landscape');
-                // return doc.addImage(newCanvasImg, 'JPEG', 10, 10, 280, 150 );
-            }).then((graph)=>{
-                // var graph = document.querySelector('#graph-chart');
-                // graph = graph.outerHTML;
-                         
-              
-                         
-                // var graph = document.getElementById('graph-chart');
 
+            // console.log(htmlObject.innerHTML, 'innerHTML');
+            
+            return html2canvas(document.querySelector("#graph-chart")
+            ).then(canvasImg => {
+                const canvas = document.createElement("canvas");
+  
+                const context = canvas.getContext("2d");
+                
+                const canvasWidth = 530;
+                const canvasHeight = 180;
+                
+                canvas.width = canvasWidth;
+                canvas.height = canvasHeight;
+                
+                context.drawImage(canvasImg, 0, 0, canvasWidth, canvasHeight);
+                context.font = "16px Georgia black";
+                
+                const sourceImageData = context.getImageData(0, 0, canvasWidth, canvasHeight);
+                // const blankOutputImageData = context.createImageData(canvasWidth, canvasHeight);
 
-              
-                htmlObject.getElementsByTagName("h4")[0].insertAdjacentHTML('beforebegin', '<img src="'+ graph +'" />');            
+                // // const finalImg = applyConvolution(sourceImageData, blankOutputImageData,[
+                // //     -1, -1, -1, 
+                // //    -1, 9, -1,
+                // //     -1, -1, -1
+                // // ]); 
+
+                context.putImageData(sourceImageData, 0, 0);
                 
-                var html = htmlToPdfmake(htmlObject.outerHTML); 
+                return canvas.toDataURL();
                 
+            }).then((graph)=>{   
+                // htmlObject.getElementsByTagName("h1")[0].insertAdjacentHTML('beforebegin', '<img src="'+ imgData +'" />')          
+                htmlObject.getElementsByTagName("h2")[0].insertAdjacentHTML('beforebegin', '<img src="'+ graph +'" />');            
                 //html to pdf format
-                // var html = htmlToPdfmake(pdfContent);
-                    
+                var html = htmlToPdfmake(htmlObject.outerHTML);    
                 const documentDefinition = { content: html };
+
                 pdfMake.vfs = pdfFonts.pdfMake.vfs;
                 pdfMake.createPdf(documentDefinition).open();
             })
         }
-
-        
-        // e.preventDefault()
-        // let doc = new jsPDF("landscape", 'pt', 'A4');
-        // doc.html(document.getElementById('pdf-view'), {
-        //   callback: () => {
-        //     doc.save('test.pdf');
-        //   }
-        // });
     }
 
     useEffect(() => {
@@ -745,7 +879,7 @@ const DriverGraphDetails = ({ history }) => {
                 <Header pageHead={pageHead} />
                 <Sidebar />
                 <div className={`main-content ${isMinimize === 'minimize' ? 'minimize-main' : ''}`}>
-                    <div className="page-content">
+                    <div className={userType === "company-administrator" ? "page-content company-admin" :"page-content"}>
                         <div className="container-fluid">
                             <div className="row">
                                 <div className="col-12">
@@ -839,13 +973,14 @@ const DriverGraphDetails = ({ history }) => {
                                             certifies={certifies}
                                             setSuccess={setSuccess}
                                             dayLightSavings={driverData?.dayLightSavingsTime}
+                                            isDownload= {isDownload}
                                         /> }
                                         
                                     </div>
                                 </div>
                             </div>
                             {driverData?.violationRanges?.length > 0 && (
-                                <Violations data={driverData.violationRanges} violations={statusViolations} />
+                                <Violations data={driverData.violationRanges} violations={statusViolations} logDate={logDate} />
                             )}{" "}
                             {allow_system_user ? 
                             <div className='row'>
@@ -903,6 +1038,8 @@ const DriverGraphDetails = ({ history }) => {
                                                 change={findRows}
                                                 handleChange={handleChange}
                                                 mode='edit'
+                                                truckNumber={driverData?.vehicle?.vehicleNumber}
+                                                logDate={logDate}
                                             />
                                         ) : null}{" "}
                                     </div>
@@ -914,23 +1051,65 @@ const DriverGraphDetails = ({ history }) => {
                                 date={date}
                                 driverId={id}
                                 formViolations={formViolations}
+                                logs = {originalLogs}
                             />
                         </div>
                     </div>
                 </div>
             </div>
+            { isTrue ? 
+            <div id="svg-container" >
+                <svg id="Layer_1" data-name="Layer 1" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1539.72 352.02">
+            <defs>
+                {/* <style>
+                .cls-1 {
+                    fill: #1d2939;
+                }
+
+                .cls-2 {
+                    fill: #2e90fa;
+                }
+
+                .cls-3 {
+                    fill: #16b364;
+                }
+
+                .cls-4 {
+                    fill: #fac515;
+                }
+                </style> */}
+            </defs>
+            <g id="Logo">
+                <path class="cls-2" d="M255.44,49.88L49.88,255.44c-6.73,6.73-17.95,5.56-23.17-2.4C9.82,227.31,0,196.54,0,163.46,0,73.09,73.09,0,163.46,0c33.07,0,63.85,9.82,89.58,26.71,7.96,5.23,9.13,16.44,2.4,23.17Z"/>
+                <path class="cls-3" d="M326.92,163.46c0,33.09-9.83,63.89-26.74,89.62-5.01,7.63-15.6,9.26-22.49,3.27-28.68-24.94-66.16-40.03-107.16-40.03-1.01,0-2.03,0-3.04,.03-13.44,.24-20.26-16.1-10.76-25.6l119.89-119.89c6.73-6.73,17.9-5.55,23.16,2.38,17.15,25.86,27.14,56.87,27.14,90.23Z"/>
+                <path class="cls-4" d="M257.75,280.75c5.58,3.95,5.58,12.3,0,16.25-26.64,18.84-59.17,29.91-94.28,29.91s-67.64-11.08-94.28-29.91c-5.59-3.95-5.59-12.3,0-16.25,26.64-18.85,59.17-29.92,94.29-29.92s67.64,11.08,94.29,29.92Z"/>
+            </g>
+            <g>
+                <path class="cls-1" d="M405.1,245.24V81.6h34.6V216.72h70.15v28.52h-104.75Z"/>
+                <path class="cls-1" d="M631.6,81.6h34.6v106.27c0,11.93-2.84,22.37-8.51,31.32-5.67,8.95-13.6,15.91-23.77,20.89-10.17,4.98-22.03,7.47-35.56,7.47s-25.46-2.49-35.64-7.47c-10.17-4.98-18.08-11.95-23.73-20.89-5.65-8.95-8.47-19.39-8.47-31.32V81.6h34.6v103.31c0,6.23,1.37,11.77,4.11,16.62,2.74,4.85,6.62,8.66,11.63,11.43,5.01,2.77,10.84,4.16,17.5,4.16s12.56-1.38,17.54-4.16c4.98-2.77,8.84-6.58,11.59-11.43,2.74-4.85,4.11-10.39,4.11-16.62V81.6Z"/>
+                <path class="cls-1" d="M836.77,138.89h-35c-.64-4.53-1.95-8.56-3.92-12.1-1.97-3.54-4.5-6.56-7.59-9.07-3.09-2.5-6.64-4.42-10.67-5.75-4.02-1.33-8.38-2-13.06-2-8.47,0-15.85,2.09-22.13,6.27-6.29,4.18-11.16,10.25-14.62,18.22-3.46,7.96-5.19,17.62-5.19,28.96s1.74,21.47,5.23,29.4c3.49,7.94,8.38,13.93,14.66,17.98,6.28,4.05,13.56,6.07,21.81,6.07,4.63,0,8.93-.61,12.9-1.84,3.97-1.22,7.5-3.02,10.59-5.39,3.09-2.37,5.66-5.26,7.71-8.67,2.05-3.41,3.48-7.3,4.27-11.67l35,.16c-.91,7.51-3.16,14.74-6.75,21.69-3.6,6.95-8.42,13.16-14.46,18.62-6.05,5.46-13.24,9.78-21.57,12.94-8.34,3.17-17.75,4.75-28.25,4.75-14.6,0-27.63-3.3-39.11-9.91-11.48-6.6-20.53-16.17-27.17-28.68-6.63-12.52-9.95-27.67-9.95-45.46s3.36-33.02,10.07-45.54c6.71-12.52,15.82-22.07,27.33-28.64,11.51-6.58,24.45-9.87,38.83-9.87,9.48,0,18.28,1.33,26.41,4,8.12,2.66,15.33,6.54,21.61,11.63,6.28,5.09,11.41,11.31,15.38,18.66,3.97,7.35,6.51,15.77,7.63,25.25Z"/>
+                <path class="cls-1" d="M893.97,81.6V245.24h-34.6V81.6h34.6Z"/>
+                <path class="cls-1" d="M978.25,245.24h-58.01V81.6h58.49c16.46,0,30.63,3.26,42.51,9.79,11.88,6.53,21.03,15.89,27.45,28.08,6.42,12.2,9.63,26.79,9.63,43.79s-3.21,31.69-9.63,43.95c-6.42,12.25-15.61,21.65-27.57,28.2-11.96,6.55-26.25,9.83-42.87,9.83Zm-23.41-29.64h21.97c10.23,0,18.84-1.82,25.85-5.47,7-3.65,12.28-9.32,15.82-17.02,3.54-7.7,5.31-17.64,5.31-29.84s-1.77-21.97-5.31-29.64c-3.54-7.67-8.8-13.32-15.78-16.94-6.98-3.62-15.58-5.43-25.81-5.43h-22.05v104.35Z"/>
+                <path class="cls-1" d="M1131.55,245.24V81.6h110.26v28.52h-75.67v38.99h69.99v28.52h-69.99v39.07h75.99v28.52h-110.58Z"/>
+                <path class="cls-1" d="M1267.13,245.24V81.6h34.6V216.72h70.15v28.52h-104.75Z"/>
+                <path class="cls-1" d="M1450.56,245.24h-58.01V81.6h58.49c16.46,0,30.63,3.26,42.51,9.79,11.88,6.53,21.03,15.89,27.45,28.08,6.42,12.2,9.63,26.79,9.63,43.79s-3.21,31.69-9.63,43.95c-6.42,12.25-15.61,21.65-27.57,28.2-11.96,6.55-26.25,9.83-42.87,9.83Zm-23.41-29.64h21.97c10.23,0,18.84-1.82,25.85-5.47,7-3.65,12.28-9.32,15.82-17.02,3.54-7.7,5.31-17.64,5.31-29.84s-1.77-21.97-5.31-29.64c-3.54-7.67-8.8-13.32-15.78-16.94-6.98-3.62-15.58-5.43-25.81-5.43h-22.05v104.35Z"/>
+            </g>
+            </svg>
+            </div> : ""
+            }
+            
             {/* <!--Add Event Modal --> */}
-            <EventFormModal open={showAddAdminModal} close={handleAddAdminClose} data={selectedRowData} logDate={logDate} logId={logId} onLoad={event} />
+            <EventFormModal open={showAddAdminModal} close={handleAddAdminClose} data={selectedRowData} logDate={logDate} logId={logId} onLoad={event} truckId={driverData?.vehicle?.vehicleId} truckNo={driverData?.vehicle?.vehicleNumber} />
             {/* <!--Add Event Modal --> */}
-            <EventFormEdithModal open={showEditFormModal} close={handleFormEditClose} data={driverData} logDate={logDate} logId={logId} onLoad={event} driverId={params?.id} />
+            <EventFormEdithModal open={showEditFormModal} close={handleFormEditClose} data={driverData} logDate={logDate} logId={logId} onLoad={event} driverId={params?.id} truckId={driverData?.vehicle?.vehicleId} truckNo={driverData?.vehicle?.vehicleNumber} />
             {/* <!--Add Event Modal --> */}
-            <EventFormTechModal infoLog={infoLog} open={showAddEventTechnicianModal} close={handleAddEventTechnicianClose} title={eventModalTitle} data={selectedRowData} logDate={logDate} logId={logId} onLoad={event} />
+            <EventFormTechModal infoLog={infoLog} open={showAddEventTechnicianModal} close={handleAddEventTechnicianClose} title={eventModalTitle} data={selectedRowData} logDate={logDate} logId={logId} onLoad={event} truckId={driverData?.vehicle?.vehicleId} truckNo={driverData?.vehicle?.vehicleNumber} />
             {/* <!--Add Event Modal --> */}
             <EventProcessDataModal open={processDataModal} close={handleProcessDataClose} data={selectedRowData} logDate={logDate} logId={logId} onLoad={event} />
             {/* <!--Transfer Event Modal --> */}
             <TransferModal ids={inputEventIds} open={transferModal} close={handleTransferModalClose} data={selectedRowData} logDate={logDate} logId={logId} onLoad={event} />
             {/* <!--Reassign Event Modal --> */}
-            <ReassignEvent ids={inputEventIds} open={reassignEventModal} close={handleReassignModalClose} data={selectedRowData} logDate={logDate} logId={logId} onLoad={event} />
+            <ReassignEvent ids={inputEventIds} open={reassignEventModal} close={handleReassignModalClose} data={selectedRowData} logDate={logDate} logId={logId} onLoad={event} driverId={params?.id} />
             {/* <!--Bulk Update Event Modal --> */}
             <BulkEventUpdate ids={inputActionIds} originalLogs={originalLogs} open={bulkUpdateEventModal} close={handleBulkEventModalClose} data={selectedRowData} logDate={logDate} logId={logId} />
             {/* Compare logs */}
@@ -964,8 +1143,11 @@ const DriverGraphDetails = ({ history }) => {
             open={compareLogModal} 
             close={handleCompareLogModalClose} 
             logDate={logDate} logId={logId} 
-            coDriver={driverData?.driver}/>
-        </>
+            coDriver={driverData?.driver}
+            driverName={driverData?.driver?.driverName}
+            coDriverName={driverData?.driver?.coDriverName}
+            />
+        </>  
     )
 }
 export default DriverGraphDetails 

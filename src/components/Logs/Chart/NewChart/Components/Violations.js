@@ -9,6 +9,7 @@ export const Violations = ({violations}) => {
          case 'DS_SB': return { top: 'calc(37% - 1px)' };
          case 'DS_D': return { top: 'calc(62% - 1px)' };
          case 'DS_ON': return { top: 'calc(87% - 1px)' };
+         case 'DR_IND_YM' : return { top: 'calc(87% - 1px)'}
          default: return { top: '0', display: 'none'}
       }
    }

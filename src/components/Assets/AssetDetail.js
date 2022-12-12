@@ -8,6 +8,10 @@ import AssetSidebar from "./component/AssetSidebar";
 import deepEqual from "fast-deep-equal";
 import moment from "moment-timezone";
 import { MapAsset } from './MapAsset';
+import geoLocation from './csvjson.json';
+import * as geolib from 'geolib';
+import _ from 'lodash';
+import { distance } from './utils.js';
 // import { MapTracking } from './MapTracking'
 // import { MapLeaflet } from './MapTracking/MapLeaflet'
 import { getLocations } from './MapTracking/utils'
@@ -20,23 +24,27 @@ const AssetDetail = () => {
     const params = useParams();
     const [mapUnits, setMapUnits] = useState([]);
     const [units, setUnits] = useState([]);
+    // const [error, setErrors] = useState('');
     const [defaulDate, setDefaulDate] = useState();
     const [firstFetch, setFirstFetch] = useState(true);
     const [maptypeId, setMaptypeId] = useState("roadmap");
     const { isMinimize, isMode } = useSelector(state => state.dashboard) 
-    // const { locationHistory } = useSelector(state => state.vehicles)
-    const user = JSON.parse(localStorage.getItem("userInfo"));
-    const tz = user && user.companyInfo && user.companyInfo.timeZoneId ? user.companyInfo.timeZoneId : "America/Los_Angeles";
+    const { user } = useSelector((state) => state.auth);
+    const { locationHistory } = useSelector(state => state.vehicles)
+    const userInfo = JSON.parse(localStorage.getItem("userInfo"));
+    const tz = userInfo && userInfo.companyInfo && userInfo.companyInfo.timeZoneId ? userInfo.companyInfo.timeZoneId : "America/Los_Angeles";
+    var userType = user && user.user && user.user.userType; 
 
    useEffect(() => {
-        setDefaulDate(moment().format('YYYY-MM-DD') + '/' + moment().format('YYYY-MM-DD'))
+        setDefaulDate(moment().format('YYYY-MM-DD') + '/' + moment().format('YYYY-MM-DD'));
         if(params.vehicleId){
-            dispatch(getVehicleLocation(params?.vehicleId, defaulDate));
+            dispatch(getVehicleLocation(params?.vehicleId, moment().format('YYYY-MM-DD') + '/' + moment().format('YYYY-MM-DD')));
         }    
     }, [dispatch, params, defaulDate]);
 
-    // console.log(locationHistory, 'locationHistory');
     let result = data;
+
+    let res = locationHistory;
    
     useEffect(() => {
         if (result) {
@@ -79,6 +87,54 @@ const AssetDetail = () => {
         return false;
     };
 
+    useEffect(() => {
+        if(res){
+            let data = res.data.locationHistory;
+            if(data){
+                for(let i = 0; i < data.length; i++){
+                    let locationsData = data[i].locations;
+                    if(locationsData){
+                        for(let j= 0; j < locationsData.length; j++){
+                            let inputLat = locationsData[j].coordinates.lat ? locationsData[j].coordinates.lat : '';
+                            let inputLng = locationsData[j].coordinates.lng ? locationsData[j].coordinates.lng : '';
+                            if (inputLat && inputLng) {
+                                let geoLocationList = JSON.parse(JSON.stringify(geoLocation.geoLocationList));
+                                geoLocationList = _.map(geoLocationList, (location) => {
+                                    location.distance = distance(inputLat, inputLng, location.Lat, location.Lon, 'M');
+                                    // console.log(location.distance, 'locationhere');
+                                    return location;
+                                })
+                                let distanceList = _.map(geoLocationList, (list) => list.distance);
+                                let closetDistance = _.min(distanceList);
+                                let closetLocation = _.find(geoLocationList, { distance: closetDistance });
+                                if (distanceList && closetDistance && closetLocation) {
+                                    let result = geolib.getCompassDirection(
+                                        { latitude: closetLocation.Lat, longitude: closetLocation.Lon },
+                                        { latitude: inputLat, longitude: inputLng }
+                                    );
+                                    if (result && closetLocation) {
+                                        locationsData[j].location = `${closetLocation.distance}mi ${result} from ${closetLocation.City}, ${closetLocation.State}`;
+                                        // setValue('calcLoc', `${closetLocation.distance}mi ${result} from ${closetLocation.City}, ${closetLocation.State}`);
+                                        // setErrors('')
+                                    } else {
+                                        // setValue('calcLoc', '');
+                                        // setErrors('Please Enter correct coordinate');
+                                    }
+                                } else {
+                                    // setValue('calcLoc', '');
+                                    // setErrors('Please Enter correct coordinate');
+                                }
+                            }                       
+                        }
+                    }
+                }
+            }            
+        }
+       
+    },[res]);
+
+    // console
+
     const pageHead = `Vehicle Location History/${params?.vehicleNo ? params.vehicleNo : 0}`
     return (
         <>
@@ -87,7 +143,7 @@ const AssetDetail = () => {
                 <Sidebar />
                 <div className={`main-content ${isMinimize === 'minimize' ? 'minimize-main' : ''}`}>
 
-                    <div className="page-content asset-page">
+                    <div className={userType === "company-administrator" ? "page-content asset-page company-admin" : "page-content asset-page"}>
                         <div className="container-fluid">
                             <div className="row">
                                 <AssetSidebar />

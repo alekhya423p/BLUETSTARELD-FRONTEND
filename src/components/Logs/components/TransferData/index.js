@@ -7,6 +7,7 @@ import * as yup from "yup";
 import { yupResolver } from '@hookform/resolvers/yup';
 import DateRangePicker from "react-bootstrap-daterangepicker";
 import "bootstrap-daterangepicker/daterangepicker.css";
+import { getDriverMaster } from "../../../../actions/driverAction";
 import Loading from "../../../layout/Loading";
 import moment from "moment";
 
@@ -23,6 +24,7 @@ const TransferData = (props) => {
     };
 
 	const dispatch = useDispatch();
+    const { masterDrivers } = useSelector(state => state.drivers);
 	const { loading } = useSelector(state => state.logs)
     const { isMode } = useSelector(state => state.dashboard)
 
@@ -67,6 +69,10 @@ const TransferData = (props) => {
         setEndDate(moment(end._d).format('YYYY-MM-DD'));
     }
 
+    useEffect(() => {
+        dispatch(getDriverMaster());
+    },[dispatch]);
+
 	useEffect(() => {
 		// console.log(props.data)
 		if (props.data && props.mode === "edit") {
@@ -101,8 +107,8 @@ const TransferData = (props) => {
                                 <div className='col-sm-12'>
                                     <select className="form-select"  {...register('driverId')} defaultValue={inputDriver} onChange={(e) => setInputDriver(e)}>
                                         <option value={''}>Select Driver</option>
-                                        	{props?.drivers && props?.drivers.map((item, index) => (
-												<option key={index} value={item.id}>{item.firstName} {item.lastName}</option>
+                                        	{masterDrivers && masterDrivers.map((item, index) => (
+												<option key={index} value={item.id}>{item.name}</option>
 											))}
                                     </select>
                                     {errors.vehicleId && (

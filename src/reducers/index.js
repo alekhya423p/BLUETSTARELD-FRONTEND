@@ -23,6 +23,7 @@ import { alertReducers } from "./alertReducer";
 import { systemUserReducers } from "./systemUserReducers";
 import {subscriptionReducers} from './subscriptionReducers';
 import { resourceReducers} from './resourceReducer';
+import { locationsharingReducers } from "./locationsharingReducer";
 
 export default combineReducers({
     auth: authReducer,
@@ -49,4 +50,5 @@ export default combineReducers({
     systemUsers: systemUserReducers,
     subscriptionStore: subscriptionReducers,
     resources: resourceReducers,
+    locationsharing: locationsharingReducers
 });

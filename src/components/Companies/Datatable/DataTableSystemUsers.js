@@ -77,7 +77,7 @@ const DataTableSystemUsers = forwardRef((props, ref) => {
     <MDBDataTableV5
       hover
       id="mdbDtTable"
-      className="boot_table_custom"
+      className="boot_table_custom system_managment"
       entries={10}
       data={datatable}
       striped

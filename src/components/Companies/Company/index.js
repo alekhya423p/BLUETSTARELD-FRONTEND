@@ -9,7 +9,7 @@ import DeactivateModal from "./DeactivateModal";
 const Company = (props) => {
 
   const dispatch = useDispatch();
-  const [searchStatus, setsearchStatus] = useState("true");
+  const [searchStatus, setsearchStatus] = useState("active");
   const [searchKey, setSearchKey] = useState("");
   const [searchCompany, setSearchCompany] = useState("");
   const [showCreateCompanyModal, setShowCreateCompanyModal] = useState(false);
@@ -45,7 +45,7 @@ const Company = (props) => {
     setDeactivateModal(false);
     setSelectedRowData(false);
   };
-  
+  // console.log(searchStatus,"4888")
   return (
     <>
       <div className="row mb-40">
@@ -76,8 +76,8 @@ const Company = (props) => {
                   value={searchStatus}
                   onChange={(e) => setsearchStatus(e.target.value)}
                 >
-                  <option value="true">Active</option>
-                  <option value="false">Inactive</option>
+                  <option value="active">Active</option>
+                  <option value="inactive">Inactive</option>
                 </select>
               </div>
             </div>
@@ -133,7 +133,7 @@ const Company = (props) => {
 
           { loading ?
             <Loading /> :
-            <DataTableCompanies allow_correction={props.allow_correction} handlDeactiveCompany={handlDeactiveCompany} totalRecord={totalRecord} currentPage={currentPage} setCurrentPage={setCurrentPage} data={companies} ref={childRef} itemsPerPage={itemsPerPage} mode='edit'/>
+            <DataTableCompanies allow_correction={props.allow_correction} handlDeactiveCompany={handlDeactiveCompany} totalRecord={totalRecord} currentPage={currentPage} searchStatus={searchStatus} setCurrentPage={setCurrentPage} data={companies} ref={childRef} itemsPerPage={itemsPerPage} mode='edit'/>
           }
           </div>
         </div>
@@ -145,6 +145,9 @@ const Company = (props) => {
         open={showCreateCompanyModal}
         close={handleCreateCompanyClose}
         data={selectedRowData}
+        searchKey={searchKey}
+        searchStatus={searchStatus}
+        searchCompany={searchCompany}
       />
       <DeactivateModal
         open={showDeactivateModal}

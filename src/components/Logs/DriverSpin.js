@@ -3,7 +3,6 @@ import { BigDoughnut } from "./components/BigDoughnut";
 
 const DriverSpin = ({ today, timers }) => {
   const show = today;
-
   return (
     <div className="cycles-info">
       {show && (

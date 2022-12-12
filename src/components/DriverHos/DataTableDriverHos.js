@@ -6,19 +6,54 @@ import { getLogEventCode } from '../../helper/helper'
 const DataTableDriverHos = forwardRef((props, ref) => {
   let data = props.data;
   
-  const getDuration = (totalSecs) => {
-    var sec_num = parseInt(totalSecs, 10)
-    var hours   = Math.floor(sec_num / 3600)
-    var minutes = Math.floor(sec_num / 60) % 60
+  const getCalcTimer = (timer, type) => {
+    let total;
+    let hours = "00";
+    let minutes = "00";
+    let colors = ["#F2994A", "#cfcfcf"];
+    let labels;
+    switch (type) {
+      case "break":
+        colors = ["#eaaa08", "#ffe9b0"];
+        labels = ["", ""];
+        total = 8;
+        break;
+      case "drive":
+        colors = ["#16b364", "#b9ffdc"];
+        labels = ["", ""];
+        total = 11;
+        break;
+      case "shift":
+        colors = ["#2e90fa", "#cae4ff"];
+        labels = ["", ""];
+        total = 14;
+        break;
+      case "cycle":
+        colors = ["#667085", "#dcdcdc"];
+        labels = ["", ""];
+        total = 70;
+        break;
+      case "recap":
+        colors = ["#F2994A", "#cfcfcf"];
+        labels = ["", ""];
+        total = 50;
+        break;
+      default:
+        break;
+    }
 
-    return [hours,minutes]
-        .map(v => v < 10 ? "0" + v : v)
-        .filter((v,i) => v !== "00" || i > 0)
-        .join(":")
-    // let h = Math.floor(totalSecs / 3600);
-    // let m = Math.floor((totalSecs - h * 3600) / 60);
-    // return h +':'+ m;
-  };
+    if (+timer && +timer > 0) {
+      hours = Math.floor(Math.round(+timer) / 60);
+      minutes = Math.round(+timer - 60 * hours);
+      hours = hours > 9 ? `${hours}` : `0${hours}`;
+      minutes = minutes > 9 ? `${minutes}` : `0${minutes}`;
+        return hours + ':' + minutes
+    }else{
+      return '00:00';
+    }
+  }
+
+  
 
   return (
     <>
@@ -44,34 +79,22 @@ const DataTableDriverHos = forwardRef((props, ref) => {
         {data.length > 0 ? data.map((item, index) => (          
           <tr key={index}>
             <td>{ item.driver }</td>
-            <td>{ item.eldConnectionInterface === "" ? <i className="ti ti-alert-triangle text-danger warning-danger"></i> : item.eldConnectionInterface === "connected" ? <i className="ri-bluetooth-line font-size-24  text-success"></i> : <img src="assets/images/bluetooth-red.png" alt="bluetooth-off" height="22s"/> } <i className="ri-map-pin-line text-grey  font-size-24"></i> &nbsp; <strong>{ item.vehicleNumber }</strong></td>
+            <td>{ item.eldConnectionInterface === "not found" ? <i className="ti ti-alert-triangle text-danger warning-danger"></i> : item.eldConnectionInterface === "connected" ? <i className="ri-bluetooth-line font-size-24  text-success"></i> : <img src="assets/images/bluetooth-red.png" alt="bluetooth-off" height="22s"/> } <i className="ri-map-pin-line text-grey  font-size-24"></i> &nbsp; <strong>{ item.vehicleNumber }</strong></td>
             {/* <td><i className="ri-bluetooth-line font-size-24  text-success"></i>&nbsp;<i className="ri-map-pin-line text-grey  font-size-24"></i> &nbsp; <strong>{ item.vehicleNumber }</strong></td> */}
             <td>
-              <button type="button" className={`btn custtom-btns waves-effect waves-light ${item.currentStatus}`}><span className="d-block">{getLogEventCode(item.currentStatus)}</span><small className="font-size-10">{moment(item.currentDate).fromNow()}</small></button>
+              <button type="button" className={`btn custtom-btns waves-effect waves-light ${item.currentStatus}`}><span className="d-block">{getLogEventCode(item.currentStatus)}</span><small className="font-size-10">{moment(moment.utc(item.currentDate).tz(props.timeZone)).fromNow()}</small></button>
             </td>           
             <td>
-              { item && item?.calculatedTimes.map((time) => (
-                 time.type === "breakTime" ? getDuration(time.limitTime ? time.limitTime : 0) : '' 
-                ))
-              }
+              { item && item?.timers?.break ? getCalcTimer((item.timers.break)/60, 'break') : 'NA' }
             </td>
             <td>
-              { item && item?.calculatedTimes.map((time) => (
-                  time.type === "driveTime" ? getDuration(time.limitTime ? time.limitTime : 0) : '' 
-                ))
-              }
+              { item && item?.timers?.drive ? getCalcTimer((item.timers.drive)/60, 'drive') : 'NA' }
             </td>
             <td>
-              { item && item?.calculatedTimes.map((time) => (
-                  time.type === "shiftTime" ? getDuration(time.limitTime ? time.limitTime : 0) : '' 
-                ))
-              }
+              { item && item?.timers?.shift ? getCalcTimer((item.timers.shift)/60, 'shift')  : 'NA' }
             </td>
             <td>
-              { item && item?.calculatedTimes.map((time) => (
-                  time.type === "cycleTime" ? getDuration(time.limitTime ? time.limitTime : 0) : '' 
-                ))
-              }
+              { item && item?.timers?.cycle ? getCalcTimer((item.timers.cycle)/60, 'cycle') : 'NA' }
             </td>
             <td>{ item.cycleTimeAvailableTomorrow ? item.cycleTimeAvailableTomorrow : 'NA' }</td>
             <td className="last_sync">{ moment(item.lastSync).fromNow()  }</td>

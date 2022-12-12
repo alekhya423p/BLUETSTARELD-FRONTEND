@@ -41,8 +41,7 @@ const CreateReportModal = (props) => {
     };
 
     const handleDateEvent = (event, picker) => {
-        // console.log("start: ", picker.startDate._d);
-        // console.log("end: ", picker.endDate._d);
+      
         // setFromDate(picker.startDate._d.toISOString());
         // setToDate(picker.endDate._d.toISOString());
         // setSearchDate(moment(picker.startDate._d).format('YYYY/MM/DD') + '-' + moment(picker.endDate._d).format('YYYY/MM/DD'));

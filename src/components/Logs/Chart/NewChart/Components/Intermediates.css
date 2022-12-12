@@ -8,6 +8,7 @@
     height: 6px;
     width: 6px;
     border-radius: 50%;
+    top:62%;
     z-index: 11;
     cursor: pointer;
     -webkit-transform-origin: center left;
@@ -15,7 +16,31 @@
     transition: -webkit-transform .2s ease-in-out;
     transition: transform .2s ease-in-out;
     transition: transform .2s ease-in-out, -webkit-transform .2s ease-in-out
+    /* background-color: #858e9e;
+    top: 62%;
+    height: 2px;
+    position: absolute;
+    transition: transform 0.15s ease-in-out;
+    transform-origin: center; */
 }
+
+.INTER_NORMAL_PRECISION:after, .INTER_NORMAL_PRECISION:before{
+    position: absolute;
+    width: 6px;
+    height: 6px;
+    content: '';
+    background-color: #2cbd68;
+    border-radius: 20px;
+    bottom: -1px;
+    z-index: 999;
+    transition: all .3s ease;
+    display: none;
+}
+/* .INTER_NORMAL_PRECISION:hover::after, .INTER_NORMAL_PRECISION:hover::before{
+    width: 10px!important;
+    height: 10px!important;
+    transition: all .3s ease;
+} */
 
 .INTER_NORMAL_PRECISION:hover {
     -webkit-transform: scale(3) translateX(-3px);

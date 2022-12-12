@@ -14,12 +14,14 @@ const Alerts = () => {
     const [currentPage, setCurrentPage] = useState(1);
     const [searchStatus, setsearchStatus] = useState("");
     const { alerts, count, totalRecord, loading } = useSelector(state => state.alerts)
+    const { user } = useSelector((state) => state.auth);
     const { masterVehicles } = useSelector(state => state.vehicles)
     const { isMinimize, isMode } = useSelector(state => state.dashboard)
     const [showAddAlertModal, setAddAlertModal] = useState(false);
     const [selectedRowData, setSelectedRowData] = useState(false);
     const itemsPerPage = 20
     const childRef = useRef();
+    var userType = user && user.user && user.user.userType;
 
     const pageHead = `Alerts`;
 
@@ -43,7 +45,7 @@ const Alerts = () => {
             <Header pageHead={pageHead} />
             <Sidebar />
             <div className={`main-content ${isMinimize === 'minimize' ? 'minimize-main' : ''}`}>
-                <div className="page-content">
+                <div className={userType === "company-administrator" ? "page-content company-admin" : "page-content"}>
                     <div className="container-fluid">
                         <div className="row">
                             <div className="col-12">

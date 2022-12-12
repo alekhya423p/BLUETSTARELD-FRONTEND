@@ -14,6 +14,8 @@ const Profile = () => {
 
     const dispatch = useDispatch();
     const { isMinimize, isMode } = useSelector(state => state.dashboard)
+    const { usertype } = useSelector(state => state.auth)
+    var userType = usertype && usertype.user && usertype.user.userType;
     const { loading, user } = useSelector(state => state.updateProfile)
     useEffect(() => {
         dispatch({ type: LOAD_PROFILE_RESET })
@@ -28,8 +30,7 @@ const Profile = () => {
                 <Header pageHead={pageHead} />
                 <Sidebar />
                 <div className={`main-content ${isMinimize === 'minimize' ? 'minimize-main' : ''}`}>
-
-                    <div className="page-content" style={{ background: '#eff3f6' }}>
+                    <div className={userType === "company-administrator" ? "page-content company-admin" : "page-content"} style={{ background: '#eff3f6' }}>
                         <div className="container-fluid">
                             <div className="row">
                                 <div className="col-7 mt-3 mx-auto">

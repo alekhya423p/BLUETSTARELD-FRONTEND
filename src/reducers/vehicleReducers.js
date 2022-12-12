@@ -5,6 +5,7 @@ const defaultState = {
     masterVehicles:[],
     activeVehicles: 0,
     vehicle: {},
+    totalVehcile:0,
     loading: false,
     errors:{}
   }
@@ -24,7 +25,9 @@ const defaultState = {
                 vehicles: action.payload?.data?.vehicles,
                 count: action.payload?.data?.count,
                 totalRecord: action.payload?.data?.totalRecord,
-                totalPages: action.payload?.data?.totalPages
+                totalPages: action.payload?.data?.totalPages,
+                totalVehcile:action.payload?.data?.totalVehcile
+
             }
         case actionTypes.GET_VEHICLE_FAIL:
             return {
@@ -48,7 +51,7 @@ const defaultState = {
             return {
                 ...state,
                 loading: false,
-                locationHistory: action.payload?.data?.locationHistory,
+                locationHistory: action.payload,
             }
         case actionTypes.GET_VEHICLE_LOCATION_FAIL:
             return {

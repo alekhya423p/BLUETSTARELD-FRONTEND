@@ -37,6 +37,14 @@ export const StatusINotInfo = ({ log, errColor }) => (
     {log}{" "}
   </span>
 );
+
+export const StatusIINP = ({ log, errColor }) => (
+  <span className={`status-indicator inp ${errColor ? "errColor" : ""}`}>
+    {" "}
+    {log}{" "}
+  </span>
+);
+
 // eslint-disable-next-line
 export default {
   DS_ON: <StatusIOn />,
@@ -49,7 +57,7 @@ export default {
   DR_LOGOUT: <StatusINotInfo log="Logout" />,
   ENG_UP_NORMAL: <StatusINotInfo log="Power on" />,
   ENG_DOWN_NORMAL: <StatusINotInfo log="Power off" />,
-  INTER_NORMAL_PRECISION: <StatusINotInfo log="Intermediate" />,
+  INTER_NORMAL_PRECISION: <StatusIINP log="Intermediate" />,
   ELD_MALF: <StatusINotInfo log="Malfunction" />,
   DR_CERT_1: <StatusINotInfo log="Certify (1)" />,
   DR_CERT_2: <StatusINotInfo log="Certify (2)" />,
@@ -85,7 +93,7 @@ export const Status = ({ type, errColor }) => {
     case "ENG_DOWN_NORMAL":
       return <StatusINotInfo log="Power off" errColor={errColor} />;
     case "INTER_NORMAL_PRECISION":
-      return <StatusINotInfo log="Intermediate" errColor={errColor} />;
+      return <StatusIINP log="Intermediate" errColor={errColor} />;
     case "ELD_MALF":
       return <StatusINotInfo log="Malfunction" errColor={errColor} />;
     case "DR_CERT_1":

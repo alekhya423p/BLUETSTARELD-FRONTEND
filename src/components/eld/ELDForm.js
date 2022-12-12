@@ -51,6 +51,8 @@ const ELDForm = () => {
 	const [inputIsDisabled, setInputIsDisabled] = useState(false)
 	const [options, setOptions] = useState()
 	const { isValid } = formState
+	var userType = user && user.user && user.user.userType;
+
 	const onSubmit = async (values, e) => {
 		if (inputEdit === 'edit') {
 			values.id = (device.id !== false) ? device.id : ''
@@ -151,7 +153,7 @@ const ELDForm = () => {
 			<Header pageHead={pageHead}/>
 			<Sidebar/>
 			<div className={`main-content ${isMinimize === 'minimize' ? 'minimize-main' : ''}`}>
-				<div className="page-content" style={{background:'#eff3f6'}}>
+				<div className={userType === "company-administrator" ? "page-content company-admin" : "page-content"} style={{background:'#eff3f6'}}>
 					<div className="container-fluid">
 						<div className="row loader_class">
 							{ loading ? <Loading /> :

@@ -148,7 +148,8 @@
   transition: all 0.1s ease-in-out;
   -webkit-transform: translateX(-48%);
   transform: translateX(-48%);
-  color: #2a8fca;
+  /* color: #2a8fca; */
+  color: #2E90FA;
   text-align: center;
   /* font-size: 14px; */
   font-weight: 700;

@@ -22,6 +22,8 @@ const ViewByIfta = () => {
     const { vehicleDetails, vehicleReportLinks, states, count, loading } = useSelector(state => state.reports)
     const childRef = useRef();
     const { isMinimize } = useSelector(state => state.dashboard)
+    const { user } = useSelector(state => state.auth)
+    var userType = user && user.user && user.user.userType;
 
     useEffect(() => {
         dispatch(getAllStates());
@@ -61,7 +63,7 @@ const ViewByIfta = () => {
             <Header pageHead={pageHead} />
             <Sidebar />
             <div className={`main-content ${isMinimize === 'minimize' ? 'minimize-main' : ''}`}>
-                <div className="page-content">
+                <div className={userType === "company-administrator" ? "page-content company-admin" : "page-content"}>
                     <div className="container-fluid">
                          {/* start page title  */}
                          <div className="row">

@@ -18,9 +18,11 @@ const EldEvents = () => {
     // const [fromDate, setFromDate] = useState(new Date());
     // const [toDate, setToDate] = useState(new Date());
     const { isMinimize, isMode } = useSelector(state => state.dashboard)
+    const { user } = useSelector(state => state.auth)
     const { vehicles, count, totalRecord, loading } = useSelector(state => state.vehicles)
     const itemsPerPage = 20;
     const childRef = useRef();
+    var userType = user && user.user && user.user.userType;
 
     // const range = {
     //     Today: [moment(), moment()],
@@ -64,7 +66,7 @@ const EldEvents = () => {
             <Header pageHead={pageHead} />
             <Sidebar/>
             <div className={`main-content ${isMinimize === 'minimize' ? 'minimize-main' : ''}`}>
-                <div className="page-content">
+                <div className={userType === "company-administrator" ? "page-content company-admin" : "page-content"}>
                     <div className="container-fluid">
                          {/* start page title  */}
                          <div className="row">

@@ -31,8 +31,6 @@ export const formatPhoneNumber = (value) => {
 
 export const verifyVIN = (vin) => {
 
-    
-
     let oldVinVlaue = vin;
    
     var validateVinRegx = /^(?!.*i|.*q|.*o|.*I|.*Q|.*O).*$/;

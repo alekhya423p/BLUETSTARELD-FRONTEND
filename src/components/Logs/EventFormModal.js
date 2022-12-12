@@ -67,7 +67,7 @@ const EventFormModal = (props) => {
 			driverId: params.id ? params.id : "",
 			logId: props.logId ? props.logId : ""
 		}
-		console.log(dataValue, 'dataValue');
+		// console.log(dataValue, 'dataValue');
 		if (props.data) {
 			dataValue.id = (props.data !== false) ? props.data.id : ''
 		}
@@ -78,8 +78,9 @@ const EventFormModal = (props) => {
 	useEffect(() => {
 		if (props.data) {
 			let convertTimeZone = moment.tz(props.data.start_date, tz).format('HH:mm:ss');
+			let vehicleNumber = props.data.vehicleId ? props.data.vehicleId : props.truckNo;
 			setValue('startTime', convertTimeZone)
-			setValue('vehicleId', props.data.vehicleId)
+			setValue('vehicleId', vehicleNumber)
 			setValue('userId', props.data.userId)
 			setValue('driverStatus', props.data.status)
 			setValue('location', props.data.address)

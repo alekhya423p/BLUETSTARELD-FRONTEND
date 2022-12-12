@@ -147,7 +147,7 @@ export const TimePicker = (
 
    // MIN
    const onMinChange = e => {
-      console.log('onMinChange');
+      // console.log('onMinChange');
       const re = /^-?\d+\.?\d*$/;
       let m = e.target.value;
       if (re.test(e.target.value)) {

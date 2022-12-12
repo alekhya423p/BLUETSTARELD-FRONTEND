@@ -4,6 +4,7 @@ const defaultState = {
     companies: [],
     company: {},
     companyUsers: [],
+    companiesData: [],
     loading: false,
     errors: {}
 }
@@ -112,6 +113,23 @@ export const companyReducers = (state = defaultState, action = {}) => {
                 ...state,
                 error: null,
                 message: null
+            }
+        // load companies data 
+        case actionTypes.LOAD_COMPANIES_DATA_REQUEST:
+            return {
+                ...state,
+                loading: true
+            }
+        case actionTypes.LOAD_COMPANIES_DATA_SUCCESS:
+            return {
+                ...state,
+                loading: false,
+                companiesData: action.payload?.data,
+            }
+        case actionTypes.LOAD_COMPANIES_DATA_FAIL:
+            return {
+                ...state,
+                error: action.payload
             }
         default:
             return state;

@@ -1,6 +1,7 @@
 import React, { forwardRef, 
   //useState , useImperativeHandle 
 } from "react";
+import { useSelector } from "react-redux";
 import moment from "moment-timezone";
 
 // import { deselectAllCheckboxes, handleCheckChange } from "../../utility/helper";
@@ -9,8 +10,11 @@ import { checkStatus, checkStatusChart, times, isDrStatus, checkCertifyStatus, i
 import { Status } from "./StatusIndicator";
 import './driverLogRow.css'
 
-const DriverLogRow = forwardRef(({allow_system_user,handleChange ,openModal,handleEditRect,logs,canEdit,driver,originalLogs,setOriginalLogs, allow_correction , setInfoLog, change ,shouldIShow}, ref) => {
+const DriverLogRow = forwardRef(({allow_system_user,handleChange ,openModal,handleEditRect,logs,canEdit,driver,originalLogs,setOriginalLogs, allow_correction , truckNumber, setInfoLog, change ,shouldIShow, logDate}, ref) => {
   const {startDate, tz } = times();
+  const { user } = useSelector(state => state.auth);
+  var userType = user && user.user && user.user.userType;
+
   // let finalCheck = {}, count = 0;
   // const [inputCheckedCount, setinputCheckedCount] = useState(0);
   // const [inputCheckedIds, setinputCheckedIds] = useState([]);
@@ -22,8 +26,22 @@ const DriverLogRow = forwardRef(({allow_system_user,handleChange ,openModal,hand
   //   }
   // }));
 
+
+  // let totalOriginalLogs = originalLogs.length;
+  // let diff = originalLogs[totalOriginalLogs - 1].odometr - originalLogs[0].odometr
+
+
   const getStart = (start_date) => {
-    return moment.tz(start_date, tz).format("hh:mm:ss A");
+    let startDate = moment.tz(start_date, tz).format('YYYY-MM-DD');
+    let currentLogDate = moment.tz(logDate, tz).format('YYYY-MM-DD');
+
+    if(new Date(startDate).toISOString() < new Date(currentLogDate).toISOString()){
+      return "12:00:00 AM"
+    }
+    else{
+      return moment.tz(start_date, tz).format("hh:mm:ss A");
+    }
+        
   };
 
   const getDuration = (log) => {
@@ -71,16 +89,16 @@ const DriverLogRow = forwardRef(({allow_system_user,handleChange ,openModal,hand
           hover ? certDom.classList.add("hoveredCert") : certDom.classList.remove("hoveredCert");
         }
       }
-    } else if (log.status === "INTER_NORMAL_PRECISION" && shouldIShow) {
-      const interLogs = originalLogs.filter((l) => l.status === "INTER_NORMAL_PRECISION");
-      const interIndex = interLogs.findIndex((l) => l.id === log.id);
-      if (interIndex >= 0) {
-        const intersDom = document.querySelectorAll(".INTER_NORMAL_PRECISION");
-        let interDom = [...intersDom][interIndex];
-        if (interDom) {
-          hover ? interDom.classList.add("hoveredInter") : interDom.classList.remove("hoveredInter");
-        }
-      }
+    // } else if (log.status === "INTER_NORMAL_PRECISION" && shouldIShow) {
+    //   const interLogs = originalLogs.filter((l) => l.status === "INTER_NORMAL_PRECISION");
+    //   const interIndex = interLogs.findIndex((l) => l.id === log.id);
+    //   if (interIndex >= 0) {
+    //     const intersDom = document.querySelectorAll(".INTER_NORMAL_PRECISION");
+    //     let interDom = [...intersDom][interIndex];
+    //     if (interDom) {
+    //       hover ? interDom.classList.add("hoveredInter") : interDom.classList.remove("hoveredInter");
+    //     }
+    //   }
     }
   };
 
@@ -97,7 +115,7 @@ const DriverLogRow = forwardRef(({allow_system_user,handleChange ,openModal,hand
     let trkm = main.truck_number ? main.truck_number : main.truck_number;
     let trkp = pre ? pre.truck_number ? pre.truck_number : pre.truck_number : null;
     
-    let typeDiff = type === "odometr" ? 3 : 0.3;
+    let typeDiff = type === "odometer" ? 3 : 0.3;
     
     if (!driver.codriverId && main?.status !== checkCertifyStatus(main?.status) && pre && pre?.status !== checkCertifyStatus(main?.status) && trkm === trkp) {
       if (preSt && !isDrStatus(main.status) && checkStatusChart(main.status) && isDrStatus(preSt.status) && durPreSt > 30 && +main[type] - +preSt[type] < typeDiff) {
@@ -106,13 +124,13 @@ const DriverLogRow = forwardRef(({allow_system_user,handleChange ,openModal,hand
       } else if (isDrStatus(main.status) &&isDrStatus(pre.status) &&durPreSt > 30 && +main[type] === +pre[type]) {
        
         errColor = "errColor";
-      } else if (preSt &&type === "odometr" &&checkStatusChart(pre.status) &&!isDrStatus(main.status) &&!isDrStatus(preSt.status) &&Math.abs(+main.odometr - +preSt.odometr) > typeDiff) {
+      } else if (preSt &&type === "odometer" &&checkStatusChart(pre.status) &&!isDrStatus(main.status) &&!isDrStatus(preSt.status) &&Math.abs(+main.odometer - +preSt.odometer) > typeDiff) {
        
         errColor = "errColor";
       } else if (isDrStatus(main.status) && isDrStatus(pre.status) && durMain > 30 && durPreSt > 30 && main[type] === pre[type]) {
       
         errColor = "errColor";
-      } else if ( type === "odometr" && isInfoNotDrStatus(pre.status) && Math.abs(+main.odometr - +pre.odometr) > 3) {
+      } else if ( type === "odometer" && isInfoNotDrStatus(pre.status) && Math.abs(+main.odometer - +pre.odometer) > 3) {
         let firstPreSt;
         for (let i = index - 1; i >= 0; i--) {
           const el = { ...originalLogs[i] };
@@ -170,14 +188,14 @@ const DriverLogRow = forwardRef(({allow_system_user,handleChange ,openModal,hand
             <th><div className="duration"> Duration </div></th>
             <th><div className="notes">Event Status </div></th>
             <th><div className="location"> Location </div></th>
-            <th><div className="positioning"> Positioning </div></th>
+           { userType === "system-technician" || userType === "system-super-admin" ? <th><div className="positioning"> Positioning </div></th> : ""}
             <th><div className="vehicle"> Vehicle </div></th>
-            <th><div className="eld-sn"> ELD SN (MAC) </div></th>
-            <th><div className="odometr"> Odometer </div></th>
+            { userType === "system-technician" || userType === "system-super-admin" ? <th><div className="eld-sn"> ELD SN (MAC) </div></th> : "" }
+            <th><div className="odometer"> Odometer </div></th>
             <th><div className="eng-hours"> Engine Hours </div></th>
             <th><div className="origin"> Origin </div></th>
             <th><div className="notes"> Notes </div></th>
-            <th><div className="id"> ID </div></th>
+           { userType === "system-technician" || userType === "system-super-admin" ? <th><div className="id"> ID </div></th> : "" }
             <th className="align-center">Actions</th>
             {allow_system_user ? <th></th> : null}
           </tr>
@@ -203,7 +221,9 @@ const DriverLogRow = forwardRef(({allow_system_user,handleChange ,openModal,hand
                     errColor={item.intermediateErr || item.certifyErr}
                   />{" "}
                    </td>
-                <td><span className="start row-item-font">{!handleCurrentDateEvent(item) || item.status === 'DS_ON'  ? moment.tz(item.eventDate, tz).format('MMM DD,') + getStart(item.eventDate)  : getStart(item.start_date)}</span></td>
+                <td><span className="start row-item-font">{!handleCurrentDateEvent(item) || 
+                item.status === 'DS_ON'  ? getStart(item.eventDate)  : 
+                getStart(item.start_date)}</span></td>
                 <td><span className="duration row-item-font"> 
                 {checkStatusChart(item.status) ? getDuration(item) : ""}{" "}
                 </span></td>
@@ -217,11 +237,16 @@ const DriverLogRow = forwardRef(({allow_system_user,handleChange ,openModal,hand
                     {item.status !== checkCertifyStatus(item.status) ? item.location ? item.location : "N/A" : moment(item.certify_date).format("MM-DD-yyyy")}
                   </span>
                 </td>
-                <td><span className="positioning row-item-font">  {item.status !== checkCertifyStatus(item.status) ? item?.positioning?.charAt(0).toUpperCase() + item?.positioning?.slice(1) : "N/A"} </span></td>
-                <td><span className={`vehicle row-item-font ${!trkNo ? 'text-danger' : null}`} title={!trkNo ? "Vehicle not set" : ""}> {trkNo ? trkNo : 'No vehicle'} </span></td>
-                <td><span className="eld_address row-item-font"> {item.status !== checkCertifyStatus(item.status) ? item.eld_address ? item.eld_address : "NO ELD" : " "}     </span></td>
+                { userType === "system-technician" || userType === "system-super-admin" ? <td><span className="positioning row-item-font">  {item.status !== checkCertifyStatus(item.status) ? item?.positioning?.charAt(0).toUpperCase() + item?.positioning?.slice(1) : "N/A"} </span></td> : ""}
+
+                {/* <td><span className={`vehicle row-item-font ${!trkNo ? 'text-danger' : null}`} title={!trkNo ? "Vehicle not set" : ""}> {trkNo ? trkNo : truckNumber} </span></td> */}
+
+                <td><span className="vehicle row-item-font"> {trkNo ? trkNo : truckNumber} </span></td>
+                
+                { userType === "system-technician" || userType === "system-super-admin" ? <td><span className="eld_address row-item-font"> {item.status !== checkCertifyStatus(item.status) ? item.eld_address ? item.eld_address : "NO ELD" : " "} </span></td> : ""}
+                
                 <td>
-                  <span className={"row-item-font " + errorColor(i, "odometr")}>
+                  <span className={"row-item-font " + errorColor(i, "odometer")}>
                     {item.status !== checkCertifyStatus(item.status) ? item.odometr : " "}
                   </span>
                 </td>
@@ -240,17 +265,18 @@ const DriverLogRow = forwardRef(({allow_system_user,handleChange ,openModal,hand
                     {item.status !== checkCertifyStatus(item.status) ? item.note : " "}
                   </span>
                 </td>
-                <td>
+                {  userType === "system-technician" || userType === "system-super-admin" ? <td>
                   <span className="notes row-item-font">
                     {item.status !== checkCertifyStatus(item.status) ? item.sequenceId ? item.sequenceId : "N/A" : item.sequenceId}
                   </span>
-                </td>
-                <td  className="align-center">
+                </td> : ""}
+                
+                <td className="align-center">
                   {handleCurrentDateEvent(item) && item.isEditable && allow_correction ? 
                       <button type="button" onClick={() => openModal(item, 'company-user')} className="btn btn-sm"><i className="ti ti-edit"></i></button> : null }
                   {allow_system_user ? <>
                   {item.inspection ? <button type="button" onClick={() => openModal(item, 'frozen-event')} className="btn btn-sm"><i className="ti ti-edit text-info"></i></button>: null} 
-                  {handleCurrentDateEvent(item) ? <button type="button" onClick={() => openModal(item, 'technician-edit-event')} className="btn btn-sm"><i className="ti ti-edit text-danger"></i></button> : null} 
+                  {handleCurrentDateEvent(item) && !item.inspection ? <button type="button" onClick={() => openModal(item, 'technician-edit-event')} className="btn btn-sm"><i className="ti ti-edit text-danger"></i></button> : null} 
                   <button type="button" onClick={() => openModal(item, 'reassign-event')} className="btn btn-sm"><i className="ti ti-user text-danger"></i></button>   
                   <button type="button" onClick={() => openModal(item, 'copy-event')} className="btn btn-sm"><i className="ti ti-copy text-danger"></i></button>   
                   {!item.inspection ? <button type="button" onClick={() => openModal(item, 'transfer-event')} className="btn btn-sm"><i className="ti ti-trash text-danger"></i></button> : null} </>

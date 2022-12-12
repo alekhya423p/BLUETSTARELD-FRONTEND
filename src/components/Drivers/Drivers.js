@@ -1,38 +1,57 @@
 import {useEffect, useState, useRef} from "react"
-import { useSelector, useDispatch } from "react-redux";
-import { getDriver } from "../../actions/driverAction";
+import { useSelector } from "react-redux";
+//import { getDriver } from "../../actions/driverAction";
 import { Link } from 'react-router-dom'
 import Header from '../layout/Header'
 import Sidebar from '../layout/Sidebar'
 // import {Adb} from '@mui/icons-material';
 import Loading from "../layout/Loading";
 import DataTableUsers from "./DataTableUsers";
+import * as api from '../../api';
+//import axios from "axios";
 
 const Drivers = () => {
 
-    const dispatch = useDispatch()
+   // const dispatch = useDispatch()
     const [currentPage, setCurrentPage] = useState(1);
     const [searchKey, setSearchKey] = useState("");
     const [searchStatus, setsearchStatus] = useState("active");
     const { drivers, count, totalRecord, loading } = useSelector(state => state.drivers)
     const { isMinimize, isMode } = useSelector(state => state.dashboard)
+    const { user } = useSelector(state => state.auth)
     const itemsPerPage = 20
     const childRef = useRef();
+    var userType = user && user.user && user.user.userType;
 
-    useEffect(()=>{
-        dispatch(getDriver(currentPage, searchKey, searchStatus))
-    },[dispatch, currentPage, searchKey, searchStatus])
+    // useEffect(()=>{
+    //     dispatch(getDriver(currentPage, searchKey, searchStatus))
+    // },[dispatch, currentPage, searchKey, searchStatus])
    
     const clearFilter = (e) => {
         e.preventDefault();
         setSearchKey('');
         setsearchStatus('');
-        dispatch(getDriver(currentPage, searchKey, searchStatus));
+       // dispatch(getDriver(currentPage, searchKey, searchStatus));
     }
 
     const callSearch = (e) => {
         setSearchKey(e.target.value);
     }
+    const fetchdata = async () => {
+        const response = await api.getAllDriver(currentPage, searchKey, searchStatus)
+        .catch((err) =>
+        {
+            console.log("Err", err);
+        })
+        console.log("fetched data", response);
+
+    }
+
+    useEffect(()=>
+    {
+     fetchdata();
+
+    })
 
     const pageHead = `Driver(${count ? count : 0})`
     return (
@@ -41,7 +60,7 @@ const Drivers = () => {
             <Header pageHead={pageHead}/>
             <Sidebar/>
             <div className={`main-content ${isMinimize === 'minimize' ? 'minimize-main' : ''}`}>
-                <div className="page-content">
+                <div className={userType === "company-administrator" ? "page-content company-admin" : "page-content"}>
                     <div className="container-fluid">
                          {/* start page title  */}
                          <div className="row">

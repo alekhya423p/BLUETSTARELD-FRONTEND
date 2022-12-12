@@ -20,7 +20,7 @@ import Select from 'react-select';
 // import ReactDatePicker from "react-datepicker";
 import { times } from "../../utils";
 import moment from "moment-timezone";
-import { VALIDATE_NUMBERS, VALIDATE_DECIMAL } from "../../../../constants/constants";
+// import { VALIDATE_NUMBERS, VALIDATE_DECIMAL } from "../../../../constants/constants";
 // import 'react-datetime-picker/dist/DateTimePicker.css'
 
 const EventFormTechModal = (props) => {
@@ -44,8 +44,8 @@ const EventFormTechModal = (props) => {
 		certifyDate: yup.string(),
 		origin: yup.string().required('Origin is required'),
 		state: yup.string().required('State is required'),
-		odometer: yup.string().min(1, 'Odometer should be of minimum length 1').max(7, 'Odometer should be of maximun length 7').matches(VALIDATE_NUMBERS, 'Odometer should not contain decimal value'),
-		engineHours: yup.string().min(3, 'Engine hours should be of minimum length 3').max(7, 'Engine hours should be of maximum length 7').matches(VALIDATE_DECIMAL, 'Engine hours should contain decimal at tenth place value'),
+		// odometer: yup.string().min(1, 'Odometer should be of minimum length 1').max(7, 'Odometer should be of maximun length 7').matches(VALIDATE_NUMBERS, 'Odometer should not contain decimal value'),
+		// engineHours: yup.string().min(3, 'Engine hours should be of minimum length 3').max(7, 'Engine hours should be of maximum length 7').matches(VALIDATE_DECIMAL, 'Engine hours should contain decimal at tenth place value'),
 		eldId: yup.string(),
 		locSource: yup.string().required('Location Source is required'),
 		positioning: yup.string().required('Positioning is required'),
@@ -71,14 +71,15 @@ const EventFormTechModal = (props) => {
 		[startDate, setStartDate] = useState(),
 		[inputVechiles, setInputVechiles] = useState(""),
 		[error, setErrors] = useState('');
-	const [options, setOptions] = useState();
-	const [allOptions, setAllOptions] = useState();
-	const { isValid } = formState
+		const [options, setOptions] = useState();
+		const [allOptions, setAllOptions] = useState();
+		const { isValid } = formState
 
 	const onSubmit = async (values, e) => {
 		values.driverId = params.id ? params.id : "";
 		values.logId = props.logId ? props.logId : ""
 		values.logDate = props.logDate ? props.logDate : ""
+		values.odometer = values.odometer ? values.odometer : 0;
 		// values.type = modalType
 		var startDateISO;
 		var startTime1 = new Date(props?.logDate?.concat(' ', values?.startTime));
@@ -90,10 +91,12 @@ const EventFormTechModal = (props) => {
 		const currentTime = moment.tz(splitDate, tz).toISOString();
 		values.start_date = currentTime;
 		if (props.data) values.id = (props.data !== false) ? props.data.id : '';
-		if (modalType !== 'editevent') {
+		// console.log(props);
+		// console.log(modalType);
+		if (modalType === 'duplicateevent') {
 			delete values.id
 		}
-		(props.data && modalType !== 'dublicateevent') ? dispatch(eventUpdateByTechnician(values)) : dispatch(storeEventByTechnician(values));
+		(props.data && modalType !== 'duplicateevent') ? dispatch(eventUpdateByTechnician(values)) : dispatch(storeEventByTechnician(values));
 		props.close();
 	};
 
@@ -103,9 +106,9 @@ const EventFormTechModal = (props) => {
 	}, [dispatch])
 
 	useEffect(() => {
-		// console.log(props.data);
 		if (props.data) {
-			// console.log(props.data, 'data');
+			console.log(props.data.odometer, 'data', props.data.odometr);
+			let vehicleNumber = props.data.vehicleId ? props.data.vehicleId : props.truckId;
 			if (checkCertifyStatus(props.data.status)) {
 				setIsCertifyVisible(true);
 				setValue('certifyDate', moment(props.data.certify_date).format('yyyy-MM-DD'))
@@ -126,10 +129,10 @@ const EventFormTechModal = (props) => {
 				setIsAutomatic(true)
 				setIsManual(true)
 			}
-			console.log(props.data.address, 'addresslocation', props.data.location);
-			setInputVechiles({ value: props.data.vehicleId, label: props.data.vehicleNumber });
+			// console.log(props.data.address, 'addresslocation', props.data.location);
+			setInputVechiles({ value: props.data.vehicleId ? props.data.vehicleId : props.truckId, label: props.data.vehicleNumber ? props.data.vehicleNumber : props.truckNo });
 			setInputELD({ value: props.data.eldId, label: props.data.eld_address });
-			setValue('vehicleId', props.data.vehicleId)
+			setValue('vehicleId', vehicleNumber)
 			setValue('driverStatus', props.data.status)
 			setValue('origin', props.data.recordOrigin)
 			setValue('state', props.data.record_status)
@@ -275,9 +278,6 @@ const EventFormTechModal = (props) => {
         setEventNotes(value);
 		setValue('notes', value)
 	}
-
-	// console.log(moment().format('YYYY-MM-DD H:mm'));
-
 	return (
 		props.open && (
 			<Modal className={`add_event-modal ${isMode}`} show={props.open} onHide={props.close}>
@@ -537,8 +537,6 @@ const EventFormTechModal = (props) => {
 										<span className="cursor-pointer" onClick={() => getSlectedText('Hook')}>Hook</span>
 										<span className="cursor-pointer" onClick={() => getSlectedText('Drop & Hook')}>Drop & Hook</span>
 									</div>
-
-
 								</div>
 							</div>
 						</div>

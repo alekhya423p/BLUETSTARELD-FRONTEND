@@ -7,7 +7,7 @@ import moment from "moment-timezone";
 import { getCoDriverLog } from '../../../../actions/logAction';
 import {LOAD_CO_DRIVER_GRAPH_LOG_RESET} from '../../../../constants/actionTypes'
 import { times, getFilteredLogs, checkStatusChart, checkCertifyStatus} from "../../utils";
-const CompareLog = ({ open, close, coDriver,data, drViolationsCurrentDriver, shiftsCurrentDriver, cyclesCurrentDriver, warningsCurrentDriver, canEditCurrentDriver, editingCurrentDriver, logCurrentDriver, setLogCurrentDriver, handleEditRectCurrentDriver, todayCurrentDriver, logsLoadingCurrentDriver, idCurrentDriver,intersCurrentDriver,noteErrorCurrentDriver, missIntersCurrentDriver, certifiesCurrentDriver, setSuccessCurrentDriver}) => {
+const CompareLog = ({ open, close, coDriver,data, drViolationsCurrentDriver, shiftsCurrentDriver, cyclesCurrentDriver, warningsCurrentDriver, canEditCurrentDriver, editingCurrentDriver, logCurrentDriver, setLogCurrentDriver, handleEditRectCurrentDriver, todayCurrentDriver, logsLoadingCurrentDriver, idCurrentDriver,intersCurrentDriver,noteErrorCurrentDriver, missIntersCurrentDriver, certifiesCurrentDriver, setSuccessCurrentDriver, driverName, coDriverName}) => {
   const params = useParams();
   const dispatch = useDispatch();
   const {coDriverData, loading } = useSelector(state => state.logs)
@@ -265,7 +265,7 @@ const CompareLog = ({ open, close, coDriver,data, drViolationsCurrentDriver, shi
 		>
         <Modal.Header>
 			<Modal.Title id="contained-modal-title">
-				{"Driver: "}
+				Driver: {driverName} 
 			</Modal.Title>
 			<Button variant="outline-danger" onClick={close}>
 				<i className="ti ti-x"></i>
@@ -296,7 +296,7 @@ const CompareLog = ({ open, close, coDriver,data, drViolationsCurrentDriver, shi
 					certifies={certifiesCurrentDriver}
 					setSuccess={setSuccessCurrentDriver}
 				/>
-				<h5><strong>Co-Driver:</strong></h5>
+				<h5><strong>Co-Driver: {coDriverName}</strong></h5>
 				<hr></hr>
 				<MainChart
 					data={!loading ? logs : []}

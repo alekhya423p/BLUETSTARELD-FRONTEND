@@ -24,6 +24,8 @@ const ViewIftaReport = () => {
     const pageHead = `View IFTA Reports`
     const itemsPerPage = 20;
     const { isMinimize, isMode } = useSelector(state => state.dashboard)
+    const { user } = useSelector(state => state.auth)
+    var userType = user && user.user && user.user.userType;
 
     useEffect(() => {
         dispatch(getVehicleMaster())
@@ -60,7 +62,7 @@ const ViewIftaReport = () => {
             <Header pageHead={pageHead} />
             <Sidebar />
             <div className={`main-content ${isMinimize === 'minimize' ? 'minimize-main' : ''}`}>
-                <div className="page-content">
+                <div className={userType === "company-administrator" ? "page-content company-admin" : "page-content"}>
                     <div className="container-fluid">
                          {/* start page title  */}
                          <div className="row">

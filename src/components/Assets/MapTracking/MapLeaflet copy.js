@@ -84,8 +84,8 @@ export const MapLeaflet = ({ stops, coordinates }) => {
     //           value: label.coordinates,
     //         },
     //         {
-    //           title: "Odometr: ",
-    //           value: label.odometr,
+    //           title: "Odometer: ",
+    //           value: label.odometer,
     //         },
     //         {
     //           title: "Date: ",

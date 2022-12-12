@@ -14,8 +14,10 @@ const PortalUser = () => {
     const [searchStatus, setsearchStatus] = useState("");
     const { users, count, totalRecord, loading } = useSelector(state => state.user)
     const { isMinimize, isMode } = useSelector(state => state.dashboard)
+    const { user } = useSelector(state => state.auth)
     const pageHead = `Portal Users(${count ? count : 0})`
     const itemsPerPage = 20;
+    const userType = user && user.user && user.user.userType;
     //console.log(users);
     useEffect(() => {
         dispatch(getUsers(currentPage, searchKey, searchStatus))
@@ -37,7 +39,7 @@ const PortalUser = () => {
                 <Header pageHead={pageHead} />
                 <Sidebar />
                 <div className={`main-content ${isMinimize === 'minimize' ? 'minimize-main' : ''}`}>
-                    <div className="page-content">
+                    <div className={userType === "company-administrator" ? "page-content company-admin" : "page-content"}>
                         <div className="container-fluid">
                             <div className="row">
                                 <div className="col-12">

@@ -35,6 +35,10 @@ const UserForm = () => {
             is: true,
             then: yup.string().required('Confirm passwords is required').oneOf([yup.ref('password'), null], 'Passwords must match'),
         }),
+        // companiesId: yup.string().when('accessAllCompanies', {
+        //     is : true,
+        //     then : yup.array().of(yup.string()).nullable().required("Companies are required") 
+        // })
     });
     const { register, handleSubmit, reset, setValue, formState: { errors, ...formState } } = useForm({
         mode: "onBlur",
@@ -47,15 +51,19 @@ const UserForm = () => {
         [inputEdit, setInputEdit] = useState(""),
         [inputIsDisabled, setInputIsDisabled] = useState(false),
         [companyId, setCompanyId] = useState([]);
-        // const [showValidate, setShowValidate] = useState(false);
+    // const [showValidate, setShowValidate] = useState(false);
 
-        const { isValid } = formState
-
+    const { isValid } = formState
+    const [showError, setShowError ] = useState(false);
     const onSubmit = async (values, e) => {
         delete values.confirmPassword;
         delete values.isEditble;
         if (values.password === '') delete values.password;
         values.timeZone = "America/Chicago";
+        if(values.accessAllCompanies === false && values.companiesId === "") {
+            // console.log("message should show ");
+            return setShowError(true);
+        }
         if (values.companiesId === ""){
             delete values.companiesId;
         }
@@ -81,7 +89,7 @@ const UserForm = () => {
 
     useEffect(() => {
         if (Object.keys(user).length !== 0) {
-            if(user.accessAllCompanies) setInputIsDisabled(true)
+            if (user.accessAllCompanies) setInputIsDisabled(true)
             setCompanyId(user.companiesObject)
             setValue('firstName', user.firstName)
             setValue('lastName', user.lastName)
@@ -90,7 +98,7 @@ const UserForm = () => {
             setValue('role', user.role)
             setValue('accessAllCompanies', user.accessAllCompanies)
             setValue('isEditble', false)
-            setValue('companiesId', user.companiesObject ? user.companiesObject?.map((companies)=>companies.value) : '')
+            setValue('companiesId', user.companiesObject ? user.companiesObject?.map((companies) => companies.value) : '')
             setInputUserTitle("Edit");
             setInputEdit("edit");
         } else {
@@ -121,10 +129,10 @@ const UserForm = () => {
     }
 
     const handleAccessChange = (e) => {
-       
-        if(e.target.value === 'on' && inputIsDisabled === false){
+
+        if (e.target.value === 'on' && inputIsDisabled === false) {
             setInputIsDisabled(true)
-        }else{
+        } else {
             setInputIsDisabled(false)
         }
     }
@@ -145,7 +153,7 @@ const UserForm = () => {
                     <div className="page-content">
                         <div className="container-fluid">
                             <div className="row loader_class">
-                                {loading ? <div className="companies-loader"><Loading /></div>  :
+                                {loading ? <div className="companies-loader"><Loading /></div> :
                                     <div className="col-8 mt-3 mx-auto">
                                         <div className="page-title-box">
                                             <form className="search-data add-driver" onSubmit={handleSubmit(onSubmit)}>
@@ -260,8 +268,8 @@ const UserForm = () => {
                                                                             <div className="col-md-12">
                                                                                 <div className="mb-2 input_text_color">
                                                                                     <label htmlFor="validationCustom01" className="form-label">Access to Companies</label><br />
-                                                                                    <input type="checkbox"  {...register ('accessAllCompanies')} required=""
-                                                                                    onChange={(e) => handleAccessChange(e)} />  Allow Access to ALL Companies
+                                                                                    <input type="checkbox"  {...register('accessAllCompanies')} required=""
+                                                                                        onChange={(e) => handleAccessChange(e)} />  Allow Access to ALL Companies
                                                                                     <p className="allow_access_policy pt-2">Cheking this box will allow user to view and access all companies. System will discard the selected companies in the form field below.</p>
                                                                                 </div>
                                                                             </div>
@@ -270,12 +278,16 @@ const UserForm = () => {
                                                                             <div className="col-md-12">
                                                                                 <div className="mb-2">
                                                                                     <label htmlFor="validationCustom01" className="form-label">Select Companies</label><br />
-                                                                                    <Select value={companyId}
-                                                                                    isDisabled={inputIsDisabled}
-                                                                                    className="select-boz-style" isMulti options={allOptions} onChange={(e) => handleCompanyName(e)} placeholder="" />
+                                                                                    <Select
+                                                                                        {...register("companiesId")}
+                                                                                        value={companyId}
+                                                                                        isDisabled={inputIsDisabled}
+                                                                                        className="select-boz-style" isMulti options={allOptions} onChange={(e) => handleCompanyName(e)} placeholder="" />
                                                                                 </div>
-                                                                                {/* {showValidate ? 
-                                                                                <div className="text-danger">Please select any one of the above </div> : ''} */}
+                                                                                {/* {errors.companiesId && (
+                                                                                        <div className="text-danger">{errors.companiesId.message}</div>)} */}
+                                                                                {showError ? 
+                                                                                <div className="text-danger">Please select any one of the above </div> : ''}
                                                                             </div>
                                                                         </div>
                                                                     </div>

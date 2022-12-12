@@ -91,6 +91,7 @@ const Dashboard = () => {
         }
         if (vehicles) {
             let newUnits = getVehicles(vehicles, search)
+          
             if (firstFetch) {
                 localStorage.setItem("firstUnits", JSON.stringify(newUnits));
                 setFirstFetch(!firstFetch);
@@ -108,6 +109,7 @@ const Dashboard = () => {
 
     useEffect(() => {
         if (driverUnits.length) {
+            console.log(driverUnits,112)
             let data = [];
             driverUnits.forEach((el) => {
                 if (el.showOnMap && el.marker) {
@@ -155,7 +157,7 @@ const Dashboard = () => {
 
     const getUnitsOnMap = (items, e) => {       
         let data = [];
-        items.forEach((el) => {
+        items && items.forEach((el) => {
             if(units.includes(el) && !(e.currentTarget.classList.contains('active'))){
                 if (el.showOnMap && el.marker) {
                     data.push({
@@ -214,6 +216,7 @@ const Dashboard = () => {
         setDriverMapUnits(data);
         return data;
     };
+
     function handleModalClose() {
         setLocationShareModal(false);
         setSelectedRowData(false);
@@ -240,13 +243,18 @@ const handleClickMapDefault =() =>{
 const handleClickMapTerrain =() =>{
     setMaptypeId("terrain")
 }
+console.log(mapDriverUnits,245)
     return (
         <>
-            <div id="layout-wrapper"  className= {show ? "maximize_map" :isMode }>
+            <div id="layout-wrapper"  className= {show ? "maximize_map" : isMode}>
               {show &&   <Fullscreen  handleClick2 ={handleClick2}
               handleClickMapSatellite ={handleClickMapSatellite} 
               handleClickMapDefault={handleClickMapDefault}
               handleClickMapTerrain = {handleClickMapTerrain}
+              truckStatus={truckStatus}
+              dutyStatus={dutyStatus}
+              order={order}
+              search={search}
               
               />  }
              
@@ -254,13 +262,17 @@ const handleClickMapTerrain =() =>{
                handleClickMapSatellite ={handleClickMapSatellite} 
                handleClickMapDefault={handleClickMapDefault}
                handleClickMapTerrain = {handleClickMapTerrain}
+               truckStatus={truckStatus}
+               dutyStatus={dutyStatus}
+               order={order}
+               search={search}
+
                />}
               {showHeader &&
                 <Sidebar handleClose ={open} />}
                 <div className={`main-content ${isMinimize === 'minimize' ? 'minimize-main' : ''}`}>
                     <div className={userType === "company-administrator" ? "page-content dashboard-page-content company-admin" : "page-content dashboard-page-content"}>
-                        <div className="container-fluid">
-                            
+                        <div className="container-fluid">                            
                             <div className="row">
                                 {showHeader && 
                                 <div className={open === false ?"col-12 col-md-3 dashboard_side-bar" : "close_menu"}>
@@ -268,7 +280,7 @@ const handleClickMapTerrain =() =>{
                                         <form className="search-data pillst-tab-new m-0">
                                             <div className="col-md-12">
                                                 <div className="form-group app-search p-0 d-flex top_sh">
-                                                    <ul className="nav nav-pills mb-3" id="pills-tab" role="tablist">
+                                                    <ul className="nav nav-pills" id="pills-tab" role="tablist">
                                                         <li className={(inputMenu === "vehicle") ? "nav-item active" : "nav-item"} onClick={(e) => makeActive("vehicle", e)} role="presentation">
                                                             <button className="btn btn border border-color py-1 px-2" id="pills-home-tab" data-bs-toggle="pill" data-bs-target="#pills-home" type="button" role="tab" aria-controls="pills-home" aria-selected="true"><i className="ti ti-truck font-size-20"></i></button>
                                                         </li>
@@ -308,7 +320,7 @@ const handleClickMapTerrain =() =>{
                                         </form>
                                     </div>
                                 </div>
-}
+                                }
                                 <div className={open === false ? "col-12 col-md-9 dashboard_map-bar" : "col-12 col-md-9 dashboard_map-bar dashboard_map_full"}>
                                 <div className="search_bar_div">
                                     <button className="map_large_button" onClick={() => handleClick()}>{open === true ?<i className="ti ti-chevron-right"></i> : <i className="ti ti-chevron-left"></i>}</button>

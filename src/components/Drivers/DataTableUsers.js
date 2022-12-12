@@ -5,10 +5,11 @@ import { Link } from "react-router-dom";
 const DataTableUsers = forwardRef((props, ref) => {
   let data = props.data;
 
+  
   return (
     <>
       <div className="mb-0 table-responsives">
-        <table align="left" className="table table-responsives table-background dt-responsive">
+        <table align="left" className="table table-responsives table-background dt-responsive table_style">
           <thead>
             <tr>
               <th valign="middle" width="20%">DRIVER<i className="ti ti-arrow-narrow-down font-size-14"></i></th>
@@ -17,6 +18,7 @@ const DataTableUsers = forwardRef((props, ref) => {
               <th width="10%">PHONE</th>
               <th width="10%">CYCLE</th>
               <th width="10%">ASSIGNED VEHICLE</th>
+              <th width="10%">CO-DRIVER</th>
               <th width="10%">APP VERSION</th>
               <th width="10%">STATUS</th>
               <th width="10%">ACTION</th>
@@ -25,15 +27,17 @@ const DataTableUsers = forwardRef((props, ref) => {
           <tbody>
           {data && data.length > 0 ? data.map((item, index) => (
             <tr key={index}>
-              <td>{ item.firstName } { item.lastName }</td>
-              <td>{item.userName}</td>
-              <td>{item.email}</td>
-              <td>{item.phoneNumber }</td>
-              <td>{item.cycle ? item.cycle : 'NA'}</td>
-              <td>{item.vehicleNo ? item.vehicleNo : 'NA'}</td>
-              <td>{item.os === "android" ? <i className="ti ti-brand-android font-size-24"></i> : item.os === "iOS" ? 'ios' : ''}{item.appVersion }</td>
-              <td>{item.active === true ? 'Active' : 'Inactive'}</td>
-              <td><Link className="btn custom-btn-outline-info" to={`/settings/drivers/${item.id}`}><i className="ti ti-edit"></i></Link></td>
+              {/* {console.log(typeof(item.assignedCoDriverId),29)} */}
+              <td>{ item?.firstName } { item?.lastName }</td>
+              <td>{item?.userName}</td>
+              <td>{item?.email}</td>
+              <td>{item?.phoneNumber }</td>
+              <td>{item?.cycle ? item?.cycle : 'NA'}</td>
+              <td>{item?.vehicleNo ? item?.vehicleNo : 'NA'}</td>
+              <td>{JSON.stringify(item?.assignedCoDriverId) ? item?.assignedCoDriverId : 'NA'}</td>
+              <td>{item?.os === "android" ? <i className="ti ti-brand-android font-size-24"></i> : item?.os === "iOS" ? 'ios' : ''}{item?.appVersion }</td>
+              <td>{item?.active === true ? 'Active' : 'Inactive'}</td>
+              <td><Link className="btn custom-btn-outline-info" to={`/settings/drivers/${item?.id}`}><i className="ti ti-edit"></i></Link></td>
             </tr>
           )) : 
           <tr>

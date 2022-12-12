@@ -67,7 +67,7 @@ export const getLocations = (vehicles) => {
     let firstUnits = JSON.parse(localStorage.getItem("firstUnits")) || [];
     let newUnits = [];
     vehicles.locations.forEach((el, i) => {
-        const odometr = el.odometr && el.odometr !== -1 ? `${el.odometr}` : "N/A";
+        const odometer = el.odometer && el.odometer !== -1 ? `${el.odometer}` : "N/A";
         newUnits.push({
             id: vehicles.id,
             status: el.eventCode ? el.eventCode : "",
@@ -78,7 +78,7 @@ export const getLocations = (vehicles) => {
                 date: el.eventDate,
                 delta_distance: 0,
                 engine_hours: 0.1,
-                odometr: odometr,
+                odometer: odometer,
                 rotation: 0,
                 speed: el.speed,
                 state: el.state,
@@ -93,7 +93,7 @@ export const getLocations = (vehicles) => {
             currentSpeed: el.speed && el.speed + " mph",
             marker: el.coordinates && {
                 iconDeg: 0,
-                odometr,
+                odometer,
                 speed: el.speed,
                 position: {
                    lat: parseFloat(el.coordinates.lat),

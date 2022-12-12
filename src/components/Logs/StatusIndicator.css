@@ -45,3 +45,9 @@
     color: #27ae60;
     border-radius: 5px;
 }
+.status-indicator.inp{
+    font-size: 12px;
+    color: #858e9e;
+    border: none!important;
+    width: auto;
+}

@@ -29,7 +29,7 @@ import DriverLogs from "./components/Logs/DriverLogs";
 import EldEvents from "./components/eld-events/EldEvents";
 import VehicleLogs from "./components/eld-events/VehicleLogs";
 import DriverHos from "./components/DriverHos/DriverHos";
-import Assets from "./components/Assets/Assets";
+// import Assets from "./components/Assets/Assets";
 import Profile from "./components/Profile";
 import AssetDetail from "./components/Assets/AssetDetail";
 import IftaReport from "./components/Reports/IftaReport";
@@ -68,11 +68,11 @@ function App() {
         <Route path="/fmcsa-records" element={<PrivateRoute><FmcsaRecords /></PrivateRoute>}></Route>
         <Route path="/eld-events" element={<PrivateRoute><EldEvents /></PrivateRoute> }></Route>
         <Route path="/driver-hos" element={<PrivateRoute><DriverHos /></PrivateRoute>}></Route>
-        <Route path="/assets" element={<PrivateRoute><Assets /></PrivateRoute>}></Route>
+        {/* <Route path="/assets" element={<PrivateRoute><Assets /></PrivateRoute>}></Route> */}
         <Route path="/chat" element={<PrivateRoute><Chat /></PrivateRoute>}></Route>
         <Route path="/resources" element={<PrivateRoute><Resources /></PrivateRoute>} />
         <Route path="/companies" element={<PrivateRoute><Companies /></PrivateRoute>} />
-        <Route path="/liveshare" element={<PrivateRoute><LiveLocationShare /></PrivateRoute>} />
+        <Route path="/share-location/locationDetails/:tokenId" element={<PrivateRoute><LiveLocationShare /></PrivateRoute>} />
         <Route path="/add-user" element={<PrivateRoute><AddUser/></PrivateRoute>} />
         <Route path="/companies/update-user/:id" element={<PrivateRoute><AddUser/></PrivateRoute>} />
         

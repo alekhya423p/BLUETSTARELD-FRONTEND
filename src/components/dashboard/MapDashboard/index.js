@@ -1,5 +1,7 @@
 import React, { useRef, useState } from "react";
-import { GoogleMap, LoadScript,MarkerClusterer} from "@react-google-maps/api";
+import { GoogleMap, LoadScript,MarkerClusterer,
+  // TrafficLayer
+} from "@react-google-maps/api";
 import { v4 as uuidv4 } from "uuid";
 import { CustomMarker } from "./elements/CustomMarker";
 import { randomGeo } from "./utils";
@@ -10,32 +12,30 @@ export const MapDashboard = ({ markers, setMaptypeId }) => {
   const mapRef = useRef(null);
   const handleOnLoad = (map) => {
 
-      if(!maps) setMpas(map);
-    // let mapRender = +localStorage.getItem("mapRender") || 0;
-    // if (mapRender === 0) {
-      const bounds = new window.google.maps.LatLngBounds();
-      if (markers.length > 1) {
-        markers.forEach((place) => {
-          bounds.extend(place.position);
-        });
-        map.fitBounds(bounds);
-      } else {
-        const defaultCenter = {
-          lat: 40.748817,
-          lng: -73.985428,
-        };
-        const center = markers[0] ? markers[0].position : defaultCenter;
-        setActiveMarker(center)
-        for (let i = 0; i < 100; i++) {
-          bounds.extend(randomGeo(center, 500));
-        }
-        map.fitBounds(bounds);
+  if(!maps) setMpas(map);
+
+    const bounds = new window.google.maps.LatLngBounds();
+    const latitudePos = markers[0]?.position?.lat;
+    const longitudePos = markers[0]?.position?.lng;
+
+    if (markers.length > 1) {
+    //   markers.forEach((place) => {
+    //     bounds.extend(place.position);
+    //   })
+    //   map.fitBounds(bounds);
+    // } else {
+      const defaultCenter = {
+        lat: latitudePos,
+        lng: longitudePos
+      };
+      const center = markers[0] ? markers[0].position : defaultCenter;
+      setActiveMarker({lat: markers[0]?.position?.lat, lng: markers[0]?.position?.lng })
+
+      for (let i = 0; i < 100; i++) {
+        bounds.extend(randomGeo(center));
       }
-      // localStorage.setItem("mapRender", mapRender + 1);
-    // }
-    // const bounds = new window.google.maps.LatLngBounds();
-    // markers.forEach(({ position }) => bounds.extend(position));
-    // map.fitBounds(bounds);
+      map.fitBounds(bounds);
+    }
   };
 
   
@@ -49,12 +49,13 @@ export const MapDashboard = ({ markers, setMaptypeId }) => {
   // }
   
   useEffect(() => {
-    if(markers.length === 0){
-      setActiveMarker({lat: 40.748817, lng: -73.985428,})
-    }else if(maps) {
-      handleOnLoad(maps)
-    }
-    // eslint-disable-next-line
+    if(markers){
+      if(markers.length === 0){
+        setActiveMarker({lat: 40.748817, lng: -73.985428,})
+      }else if(maps) {
+        handleOnLoad(maps)
+      }
+    }    
   },[markers,maps]) 
   const options = {
     imagePath: 'https://developers.google.com/maps/documentation/javascript/examples/markerclusterer/m', // so you must have m1.png, m2.png, m3.png, m4.png, m5.png and m6.png in that folder
@@ -62,7 +63,7 @@ export const MapDashboard = ({ markers, setMaptypeId }) => {
   
   return (
     <LoadScript
-      googleMapsApiKey="AIzaSyDqvuVyMWJuv-bhxfhtLhsCeuqY-VcUurQ"
+      googleMapsApiKey="AIzaSyDqvuVyMWJuv-bhxfhtLhsCeuqY-VcUurQ" libraries={["geometry"]}
     >
       <GoogleMap
         ref={mapRef}
@@ -73,6 +74,11 @@ export const MapDashboard = ({ markers, setMaptypeId }) => {
         center={activeMarker}
         mapTypeId={setMaptypeId}
       >
+
+       
+      
+      {/* <TrafficLayer autoUpdate /> */}
+
           {/* {markers.length > 0 && markers.map((mar, i) => (
             <CustomMarker
               key={uuidv4()}
@@ -82,29 +88,32 @@ export const MapDashboard = ({ markers, setMaptypeId }) => {
               label={mar.label}
               position={mar.position}
               speed={mar.speed}
-              odometr={mar.odometr}
+              odometer={mar.odometer}
               truckNo={mar.truckNo}
             />
           ))}{" "} */}
           <MarkerClusterer options={options}>
           {(clusterer) =>
             markers.length > 0 && markers.map((mar, i) => (
+            mar.id ?
             <CustomMarker
               key={uuidv4()}
-              id={mar.Id}
+              id={mar.id}
               driver={mar.driver}
               iconDeg={mar.iconDeg}
               label={mar.label}
               position={mar.position}
               speed={mar.speed}
-              odometr={mar.odometr}
+              odometer={mar.odometer}
               truckNo={mar.truckNo}
               vehicleStatus={mar?.vehicleStatus}
               heading={mar?.heading}
+              coordinates= {mar?.coordinates}
+              coordinatesPrevious= {mar?.coordinatesPrevious}
               clusterer={clusterer}
-            />
-            ))
-          }
+            /> : null
+            )) 
+          } 
         </MarkerClusterer>
       </GoogleMap>
     </LoadScript>

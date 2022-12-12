@@ -7,10 +7,10 @@ import * as yup from "yup";
 import { yupResolver } from '@hookform/resolvers/yup';
 import Loading from "../../../layout/Loading";
 import { useParams } from "react-router-dom";
+import Select from 'react-select';
 
 const EditFormModal = (props) => {
 	const params = useParams();
-	const [defaultDriver, setDefaultDriver] = useState(null);
 	const { loading } = useSelector(state => state.logs);
 	const { isMode } = useSelector(state => state.dashboard);
 	const { masterDrivers } = useSelector(state => state.drivers);
@@ -26,18 +26,16 @@ const EditFormModal = (props) => {
 		mode: "onBlur",
 		resolver: yupResolver(validationSchema),
 	}),
-	[inputCoDriver, setInputCoDriver] = useState(""),
+	// [inputCoDriver, setInputCoDriver] = useState(""),
 	[inputTrailers, setInputTrailers] = useState(""),
 	[inputShippingDocs, setInputShippingDocs] = useState(""),
 	[inputCertified, setInputCertified] = useState(false),
 	[inputModalTitle, setInputModalTitle] = useState("");
-	
 
-	console.log(setDefaultDriver, defaultDriver, 'defaultdriver');
-
-	const { isValid } = formState
+	const { isValid } = formState;
+	const [driver, setDriver] = useState("");
+	const [options, setOptions] = useState();
 	const onSubmit = async (values, e) => {
-		console.log(values, 'values');
 		values.coDriverId = values.coDriverId === "" ? null : values.coDriverId;
 		values.logDate = props.logDate;
 		values.driverId = params.id;
@@ -53,7 +51,7 @@ const EditFormModal = (props) => {
 			setValue('isCertified', props.data?.isCertified)
 			setValue('trailers', props.data?.trailers?.join(', '))
 			setValue('shippingDocuments', props.data?.shippingDocuments?.join(', '))
-			setInputCoDriver(props.data?.driver?.coDriverId);
+			// setInputCoDriver(props.data?.driver?.coDriverId);
 			setInputTrailers(props.data.status);
 			setInputCertified(props.data.userId);
 			setInputModalTitle("Edit Form (System Admistrator)");
@@ -62,7 +60,7 @@ const EditFormModal = (props) => {
 			setValue('isCertified', '')
 			setValue('trailers', '')
 			setValue('shippingDocuments', '')
-			setInputCoDriver("");
+			// setInputCoDriver("");
 			setInputTrailers("");
 			setInputCertified("");
 			setInputShippingDocs("");
@@ -79,6 +77,27 @@ const EditFormModal = (props) => {
 		dispatch(removeViolations(formData))
 		props.close();
 	}
+
+	const handleAssignDriver = (e) => {
+		setDriver(e);
+		setValue('coDriverId', e.value);
+	};
+
+	useEffect(() => {
+		if (masterDrivers) {
+			var options = masterDrivers?.map((item, index) => {
+				return { value: item.id, label: item.name }
+			});
+			var ops = options.filter(
+				({ value }) => !props.driverId.includes(value)
+			);
+			ops.unshift({
+				value: '',
+				label: 'No Co-Driver Selected'
+			});
+		  }
+		  setOptions(ops);
+	},[masterDrivers, props]);
 	
 	return (
 		props.open && (
@@ -95,12 +114,16 @@ const EditFormModal = (props) => {
 									<label>Co-Driver</label>
 								</div>
 								<div className='col-sm-8'>
-									<select className="form-select" defaultValue={inputCoDriver} onChange={(e) => setInputCoDriver(e.target.value)} {...register('coDriverId')}>
+									<Select className="select-boz-style"
+                                      onChange={(e) => handleAssignDriver(e)} 
+                                      value={driver}
+                                      options={options} placeholder="" name="driverId" />
+									{/* <select className="form-select" defaultValue={inputCoDriver} onChange={(e) => setInputCoDriver(e.target.value)} {...register('coDriverId')}>
 										<option value="">No Co-Driver Selected</option>
 										{masterDrivers && masterDrivers.map((item, index) => (
 											item.id === props.driverId ?  false : <option key={index} value={item.id}>{item.name}</option>									
 										))}
-									</select>
+									</select> */}
 									{errors.coDriverId && (
 										<div className="text-danger">{errors.coDriverId.message}</div>
 									)}

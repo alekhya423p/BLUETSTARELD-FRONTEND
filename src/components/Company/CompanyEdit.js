@@ -49,7 +49,8 @@ const CompanyEdit = () => {
     }
   });
 
-  const { isValid } = formState
+  const { isValid } = formState;
+  var userType = user && user.user && user.user.userType;
   const onSubmit = async (values, e) => {
 
     const hosSettings = {
@@ -119,7 +120,7 @@ const CompanyEdit = () => {
       <Header pageHead={pageHead} />
       <Sidebar />
       <div className={`main-content ${isMinimize === 'minimize' ? 'minimize-main' : ''}`}>
-        <div className="page-content">
+        <div className={userType === "company-administrator" ? "page-content company-admin" : "page-content"}>
           <div className="container-fluid">
             <div className="row loader_class">
               { loading ? <Loading /> :

@@ -12,6 +12,8 @@ const IftaReport = () => {
     const dispatch = useDispatch();
     const { reports, count, loading, totalRecord } = useSelector(state => state.reports)
     const { masterVehicles } = useSelector(state => state.vehicles)
+    const { user } = useSelector(state => state.auth)
+    var userType = user && user.user && user.user.userType;
     const [currentPage, setCurrentPage] = useState(1)
    
     useEffect(() => {
@@ -46,7 +48,7 @@ const IftaReport = () => {
                 <Header pageHead={pageHead} />
                 <Sidebar />
                 <div className={`main-content ${isMinimize === 'minimize' ? 'minimize-main' : ''}`}>
-                    <div className="page-content">
+                    <div className={userType === "company-administrator" ? "page-content company-admin" : "page-content"}>
                         <div className="container-fluid">
                             {/* start page title  */}
                             <div className="row">

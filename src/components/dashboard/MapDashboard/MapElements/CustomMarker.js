@@ -91,7 +91,7 @@ export const CustomMarker = ({ iconDeg, speed, label, position, draggable, icon}
                 )}{" "}
                 <div>
                   <span className="left"> Odometer: </span>{" "}
-                  <span className="right"> {label.odometr} </span>{" "}
+                  <span className="right"> {label.odometer} </span>{" "}
                 </div>{" "}
                 <div>
                   <span className="left"> Date: </span>{" "}

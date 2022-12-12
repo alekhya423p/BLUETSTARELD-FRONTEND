@@ -20,6 +20,7 @@ const UserForm = () => {
     const { isMinimize, isMode } = useSelector(state => state.dashboard)
     const { userDetail, loading } = useSelector(state => state.user)
     const { user } = useSelector(state => state.auth)
+    var userType = user && user.user && user.user.userType;
     const validationSchema = yup.object().shape({
         firstName: yup.string().required('First Name is required').matches(VALIDATE_NAME, 'Only alphabets allowed for this field').min(2, 'First Name should be greater than 2').max(30, 'First Name should be less than 30').test('firstName', 'First Name is required', (value) => value?.trim()),
         lastName: yup.string().required('Last Name is required').matches(VALIDATE_NAME, 'Only Characters are allowed for this field').min(2, 'Last Name should be greater than 2').max(30, 'Last Name should be less than 30').test('lastName', 'Last Name is required', (value) => value?.trim()),
@@ -115,7 +116,7 @@ const UserForm = () => {
                 <Header pageHead={pageHead} />
                 <Sidebar />
                 <div className={`main-content ${isMinimize === 'minimize' ? 'minimize-main' : ''}`}>
-                    <div className="page-content">
+                    <div className={userType === "company-administrator" ? "page-content company-admin" : "page-content"}>
                         <div className="container-fluid">
                             <div className="row loader_class">
                                 { loading ? <Loading/> : 

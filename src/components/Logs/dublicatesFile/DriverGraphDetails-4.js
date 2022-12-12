@@ -39,6 +39,7 @@ const DriverGraphDetails = ({ history }) => {
 
     const dispatch = useDispatch();
     const { event, events } = useSelector(state => state.logs)
+    const { user } = useSelector(state => state.auth)
     const driverData = data;
     const totalRecords = events ? events.length : 0
     const [logDate, setLogDate] = useState();
@@ -62,8 +63,8 @@ const DriverGraphDetails = ({ history }) => {
     // };
     const pageHead = `Log Details(${totalRecords})`
     const shouldIShow = JSON.parse(localStorage.getItem("shouldIShow"));
-    const user = JSON.parse(localStorage.getItem("user"));
-    const tz = user && user.company && user.company.tz ? user.company.tz.value : "America/Los_Angeles";
+    const userInfo = JSON.parse(localStorage.getItem("user"));
+    const tz = userInfo && userInfo.company && userInfo.company.tz ? userInfo.company.tz.value : "America/Los_Angeles";
     // const nMode = JSON.parse(localStorage.getItem("nMode"));
     const queryString = window.location.pathname.split("/");
     const hash = queryString[queryString.length - 1];
@@ -74,6 +75,7 @@ const DriverGraphDetails = ({ history }) => {
     // const pro_features_info = user && user.config && user.config.pro_features_info;
     // const allow_normalize = user && user.config && user.config.allow_normalize;
     const allow_correction = user && user.config && user.config.allow_correction;
+    var userType = user && user.user && user.user.userType;
     const [startDate, setStartDate] = useState(date);
     const [loader, setLoader] = useState(false);
     const [success, setSuccess] = useState(false);
@@ -258,7 +260,6 @@ const DriverGraphDetails = ({ history }) => {
                     let data = driverData;
                     if (data && data.logs) {
                         let { logs, originalLogs } = getFilteredLogs(driverData, true);
-                        console.log(logs, 'details');
                         let vehIds = [];
                         if (originalLogs[0] && (originalLogs[0].vehicleId || data.vehicleId)) {
                             vehIds.push(originalLogs[0].vehicleId || data.vehicleId);
@@ -293,7 +294,7 @@ const DriverGraphDetails = ({ history }) => {
                                         interPoints.push({point: el.start,status: lastDr.status});
                                         lastInterPoint = el.start;
                                     } else {
-                                        console.log(chartLog);
+                                        // console.log(chartLog);
                                         missInterPoints.push({point: el.start,status: chartLog ? chartLog.status : lastDr.status});
                                     }
                                 }
@@ -450,7 +451,7 @@ const DriverGraphDetails = ({ history }) => {
                         preVeh !== veh ||
                         log.status !== prevLog.status ||
                         log.note !== prevLog.note ||
-                        log.odometr !== prevLog.odometr ||
+                        log.odometer !== prevLog.odometer ||
                         log.engine_hours !== prevLog.engine_hours ||
                         log.record_status !== prevLog.record_status ||
                         log.creator !== prevLog.creator ||
@@ -539,7 +540,7 @@ const DriverGraphDetails = ({ history }) => {
                         let nextTxtArr =
                             i < text.length - 1 ? text[i + 1].split("\t") : null;
                         if (i === 0) {
-                            console.log(nextTxtArr);
+                            // console.log(nextTxtArr);
                         }
                         if (txtArr.length >= 8) {
                             const status = clStatus(txtArr[1]);
@@ -559,7 +560,7 @@ const DriverGraphDetails = ({ history }) => {
                                 start,
                                 end,
                                 address: txtArr[4],
-                                odometr: txtArr[6],
+                                odometer: txtArr[6],
                                 engine_hours: txtArr[7],
                                 note:
                                     txtArr[8] && txtArr[8] !== ""
@@ -716,7 +717,7 @@ const DriverGraphDetails = ({ history }) => {
     //                     coordinates: log.coordinates,
     //                     sequenceId: getSequenceId(driverData.id),
     //                     address: log.address,
-    //                     odometr: log.odometr ? +log.odometr : -1,
+    //                     odometer: log.odometer ? +log.odometer : -1,
     //                     engine_hours: +log.engine_hours > 0 ? +log.engine_hours : -1,
     //                     document: log.document,
     //                     trailer: log.trailer,
@@ -990,7 +991,7 @@ const DriverGraphDetails = ({ history }) => {
     //         oldLog.status !== log.status ||
     //         oldLog.note !== log.note ||
     //         oldLog.engine_hours !== log.engine_hours ||
-    //         oldLog.odometr !== log.odometr ||
+    //         oldLog.odometer !== log.odometer ||
     //         oldLog.trailer !== log.trailer ||
     //         oldLog.document !== log.document ||
     //         oldLog.address !== log.address ||
@@ -1080,14 +1081,13 @@ const DriverGraphDetails = ({ history }) => {
     // const getCodriverLink = (coDriver) => {
     //     return `/admin/logs/driver/${coDriver.id}/${date.format("DD-MM-YYYY")}`;
     // };
-    console.log(logs, 'test log');
     return (
         <>
             <div id="logout-wrapper">
                 <Header pageHead={pageHead} />
                 <Sidebar />
                 <div className={`main-content ${isMinimize === 'minimize' ? 'minimize-main' : ''}`}>
-                    <div className="page-content">
+                    <div className={userType === "company-administrator" ? "page-content company-admin" : "page-content"}>
                         <div className="container-fluid">
                             <div className="row">
                                 <div className="col-12">

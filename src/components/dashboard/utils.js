@@ -3,14 +3,15 @@ export const getVehicles = (vehicles, search) => {
     let firstUnits = JSON.parse(localStorage.getItem("firstUnits")) || [];
     let newUnits = [];
     vehicles.forEach((el, i) => {
-        const odometr = 62141;
-        // const odometr = el.tracking && el.tracking.odometr && el.tracking.odometr !== -1 ? `${el.tracking.odometr}` : "N/A";
+        // const odometer = el.tracking && el.tracking.odometer && el.tracking.odometer !== -1 ? `${el.tracking.odometer}` : "N/A";
         let fullname = (el.driverName).toLowerCase();
         newUnits.push({
             show: fullname.includes(search),
             id: el.id,
             status: el.eventCode ? getLogStatus(el.eventCode) : "",
             driver: el.driverName,
+            driverId:el.driverId,
+            history:el?.history,
             fuelLevel: el.fuelLevel,
             coDriverName: el.coDriverName,
             coDriverId: el.coDriverId,
@@ -18,19 +19,22 @@ export const getVehicles = (vehicles, search) => {
             state: el.state,
             vehicleStatus: el.vehicleStatus,
             heading: el.heading,
+            coordinates:el.coordinates,
+            coordinatesPrevious: el.coordinatesPrevious,
             tracking: {
-                address: el.location,
-                coordinates: {...el.coordinates},
-                date: el.timestamp,
-                delta_distance: 0,
-                eld_connection: true,
-                engine_hours: 0.1,
-                is_live: el.online,
-                odometr: 62141,
-                rotation: 0,
-                speed: el.speed,
-                state: el.state,
-                vehicleId: el.vehicleNumber
+              address: el.location,
+              coordinates: {...el.coordinates}, // eslint-disable-next-line
+              coordinatesPrevious: {... el.coordinatesPrevious},
+              date: el.timestamp,
+              delta_distance: 0,
+              eld_connection: true,
+              engine_hours: 0.1,
+              is_live: el.online,
+              odometer: el.odometer,
+              rotation: 0,
+              speed: el.speed,
+              state: el.state,
+              vehicleId: el.vehicleNumber
             },
             truckNo: el.vehicleId && el.vehicleNumber,
             truckId: el.vehicleId,
@@ -41,15 +45,17 @@ export const getVehicles = (vehicles, search) => {
             currentSpeed: el.speed && el.speed + " mph",
             eld: el.eld_mode ? "ELD" : el.elog_mode ? "E-LOG" : "",
             marker: el.coordinates && {
-                iconDeg: (el.vehicleStatus === 'IN_MOTION'|| el.vehicleStatus === 'INACTIVE') ? 1 :  0,
-                odometr,
-                speed: el.speed,
-                vehicleStatus: el.vehicleStatus,
-                heading: el.heading,
-                position: {
-                  lat: parseFloat(el.coordinates.lat),
-                  lng: parseFloat(el.coordinates.lng),
-                },
+              iconDeg: (el.vehicleStatus === 'IN_MOTION'|| el.vehicleStatus === 'INACTIVE') ? 1 :  0,
+              odometer: el.odometer,
+              speed: el.speed,
+              vehicleStatus: el.vehicleStatus,
+              heading: el.heading,
+              coordinates:el.coordinates,
+              coordinatesPrevious: el.coordinatesPrevious,
+              position: {
+                lat: el.coordinates?.lat ? parseFloat(el.coordinates.lat) : 0,
+                lng: el.coordinates?.lng ? parseFloat(el.coordinates.lng) : 0,
+              },
             },
             ...el.timers,
         });
@@ -63,8 +69,7 @@ export const getDrivers = (drivers, search) => {
     let firstUnits = JSON.parse(localStorage.getItem("firstDriverUnits")) || [];
     let newUnits = [];
     drivers.forEach((el, i) => {
-        const odometr = 62141;
-        // const odometr = el.tracking && el.tracking.odometr && el.tracking.odometr !== -1 ? `${el.tracking.odometr}` : "N/A";
+        // const odometer = el.tracking && el.tracking.odometer && el.tracking.odometer !== -1 ? `${el.tracking.odometer}` : "N/A";
         let fullname = (el.driverName).toLowerCase();
         newUnits.push({
             show: fullname.includes(search),
@@ -79,7 +84,7 @@ export const getDrivers = (drivers, search) => {
                 eld_connection: true,
                 engine_hours: 0.1,
                 is_live: el.online,
-                odometr: 62141,
+                odometer: el.odometer,
                 rotation: 0,
                 speed: el.speed,
                 state: el.state,
@@ -94,11 +99,11 @@ export const getDrivers = (drivers, search) => {
             eld: el.eld_mode ? "ELD" : el.elog_mode ? "E-LOG" : "",
             marker: el.coordinates && {
                 iconDeg: 0,
-                odometr,
+                odometer: el.odometer,
                 speed: el.speed,
                 position: {
-                    lat: parseFloat(el.coordinates.lat),
-                    lng: parseFloat(el.coordinates.lng),
+                    lat: el.coordinates?.lat ? parseFloat(el.coordinates.lat) : 0,
+                    lng: el.coordinates?.lng ? parseFloat(el.coordinates.lng) : 0,
                 },
             },
             times:{...el.times},
@@ -109,63 +114,93 @@ export const getDrivers = (drivers, search) => {
     return newUnits;
 };
 
-export const getLogStatus = (eventCode) => {
-    if (eventCode) {
-      if (eventCode === 'DS_OFF') {
-        return 'OFF';
+export const getLogStatus = (status) => {
+  if (status) {
+    switch (status) {
+      case "DS_OFF": {
+        return 'OFF Duty';
       }
-      if (eventCode === 'DS_SB') {
-        return "SB";
+      case "DS_SB": {
+        return 'Sleeper';
       }
-      if (eventCode === 'DS_D') {
-        return 'D';
+      case "DS_D": {
+        return 'Driving';
       }
-      if (eventCode === 'DS_ON') {
-        return 'ON';
+      case "DS_ON": {
+        return 'On Duty';
       }
-      if (eventCode === 'INTER_NORMAL_PRECISION') {
-        return 'item';
+      case "DR_IND_YM": {
+        return 'Yard Move';
       }
-      if (eventCode === 'INTER_REDUCED_PERCISION') {
-        return 'item';
+      case "DR_IND_PC": {
+        return 'Personal';
       }
-      if (eventCode === 'DR_IND_PC') {
-        return 'PC';
+      case "INTER_NORMAL_PRECISION": {
+        return 'Intermediate';
       }
-      if (eventCode === 'DR_IND_YM') {
-        return 'YM';
+      case "INTER_REDUCED_PERCISION": {
+        return 'Intermediate';
       }
-      if (eventCode === 'DR_LOGIN') {
-        return 'LI';
+      case "DR_CERT_1": {
+        return 'Certify';
       }
-      if (eventCode === 'DR_LOGOUT') {
-        return 'LO';
+      case "DR_CERT_2": {
+        return 'Certify';
       }
-      if (eventCode === 'ENG_UP_NORMAL') {
-        return 'ENG_UP_NORMAL';
+      case "DR_CERT_3": {
+        return 'Certify';
       }
-      if (eventCode === 'ENG_UP_REDUCED') {
-        return 'ENG_UP_REDUCED';
+      case "DR_CERT_4": {
+        return 'Certify';
       }
-      if (eventCode === 'ENG_DOWN_NORMAL') {
-        return 'ENG_DOWN_NORMAL';
+      case "DR_CERT_5": {
+        return 'Certify';
       }
-      if (eventCode === 'ENG_DOWN_REDUCED') {
-        return 'ENG_DOWN_REDUCED';
+      case "DR_CERT_6": {
+        return 'Certify';
       }
-      if (eventCode === 'ELD_MALF') {
-        return 'ELD_MALF';
+      case "DR_CERT_7": {
+        return 'Certify';
       }
-      if (eventCode === 'ELD_MALF_CLEARED') {
-        return 'ELD_MALF_CLEARED';
+      case "DR_CERT_8": {
+        return 'Certify';
       }
-      if (eventCode === 'ELD_DIAG') {
-        return 'ELD_DIAG';
+      case "DR_CERT_9": {
+        return 'Certify';
       }
-      if (eventCode === 'ELD_DIAG_CLEARED') {
-        return 'ELD_DIAG_CLEARED';
+      case "DR_LOGIN": {
+        return 'Login';
       }
+      case "DR_LOGOUT": {
+        return 'Logout';
+      }
+      case "ENG_UP_NORMAL": {
+        return 'Power on';
+      }
+      case "ENG_UP_REDUCED": {
+        return 'Power up';
+      }
+      case "ENG_DOWN_NORMAL": {
+        return 'Power off';
+      }
+      case "ENG_DOWN_REDUCED": {
+        return 'Power off';
+      }
+      case "ELD_MALF": {
+        return 'Malfunction';
+      }
+      case "ELD_MALF_CLEARED": {
+        return 'Malfunction';
+      }
+      case "ELD_DIAG": {
+        return 'Malfunction';
+      }
+      case "ELD_DIAG_CLEARED": {
+        return 'log';
+      }
+      default:
+        return 'none';
     }
-    return null;
   };
+}
   

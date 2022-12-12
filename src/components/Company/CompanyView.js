@@ -10,7 +10,8 @@ const CompanyView = () => {
   const { company } = useSelector((state) => state.companyDetail);
   const { isMinimize, isMode } = useSelector(state => state.dashboard)
 
-  const pageHead = 'Company Details'
+  const pageHead = 'Company Details';
+  var userType = user && user.user && user.user.userType;
 
   useEffect(() => {
     dispatch(loadCompanyDetail());
@@ -22,7 +23,7 @@ const CompanyView = () => {
         <Header pageHead={pageHead}/>
         <Sidebar/>
         <div className={`main-content ${isMinimize === 'minimize' ? 'minimize-main' : ''}`}>
-          <div className="page-content">
+          <div className={userType === "company-administrator" ? "page-content company-admin" : "page-content"}>
             <div className="container-fluid">
               <div className="row">
                 <div className="col-10 mt-3 mx-auto">
@@ -94,13 +95,13 @@ const CompanyView = () => {
               
                         <div className="col-5 company_sub_content">
                             <address>
-                              <strong>{company?.complianceMode ? company?.complianceMode : 'NA'}<br/>
+                              <strong>{company?.complianceMode ? company?.complianceMode : 'ELD'}<br/>
                              
-                              {company?.vehicleMotionThreshold ? company?.vehicleMotionThreshold : 'NA'}<br/>
+                              {company?.vehicleMotionThreshold ? company?.vehicleMotionThreshold +'mi/h' : '5 mi/h'}<br/>
                               {company?.cycle ? company?.cycle : 'NA'}<br/>
                               {company?.cargoType ? company?.cargoType : 'NA'}<br/>
                               {company?.restartHours ? company?.restartHours : 'NA'}<br/>
-                              {company.restBreak ? company.restBreak : 'NA'}<br/>
+                              {company?.restBreak ? company.restBreak : 'NA'}<br/>
                               {company?.shortHaulAllowed ? 'ON' : 'OFF'}<br/>
                               {company?.splitSBAllowed ? 'ON' : 'OFF'}<br/>
                               {company?.pcAllowed ? 'ON' : 'OFF'}<br/>

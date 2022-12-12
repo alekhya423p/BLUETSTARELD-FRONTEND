@@ -4,7 +4,7 @@ import Pagination from 'react-js-pagination';
 
 const DataTableELD = forwardRef((props, ref) => {
   let data = props.data;
-
+  
   return (
     <>
       <div className="table-responsives mb-0">

@@ -1,6 +1,6 @@
 import * as actionTypes from '../constants/actionTypes';
 import * as api from '../api';
-// import { toast } from "react-toastify";
+import { toast } from "react-toastify";
 
 /**
 * function for get alert

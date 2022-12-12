@@ -25,6 +25,7 @@ const Dashboard = () => {
     const [truckStatus, setTruckStatus] = useState();
     const [order, setOrder] = useState(1);
     const { isMinimize, vehicles, drivers } = useSelector(state => state.dashboard)
+    const { user } = useSelector((state) => state.auth);
     const [units, setUnits] = useState([]);
     const [driverUnits, setDriverUnits] = useState([]);
     const [mapUnits, setMapUnits] = useState([]);
@@ -36,8 +37,9 @@ const Dashboard = () => {
     const [showAddAdminModal, setLocationShareModal] = useState(false);
     const [selectedRowData, setSelectedRowData] = useState(false);
     const [search, setSearch] = useState("");
-    const user = JSON.parse(localStorage.getItem("userInfo"));
-    const tz = user && user.companyInfo && user.companyInfo.timeZoneId ? user.companyInfo.timeZoneId : "America/Los_Angeles";
+    const userInfo = JSON.parse(localStorage.getItem("userInfo"));
+    const tz = userInfo && userInfo.companyInfo && userInfo.companyInfo.timeZoneId ? userInfo.companyInfo.timeZoneId : "America/Los_Angeles";
+    var userType = user && user.user && user.user.userType; 
 
     useEffect(() => {
         dispatch(getDashboard(truckStatus, dutyStatus, order, search))
@@ -62,7 +64,7 @@ const Dashboard = () => {
             let firstDriverUnits = JSON.parse(localStorage.getItem("firstDriverUnits")) || [];
             let newDriverUnits = [];
             driver.forEach((el, i) => {
-                const odometr = el.odometr && el.odometr !== -1 ? `${el.odometr}` : "N/A";
+                const odometer = el.odometer && el.odometer !== -1 ? `${el.odometer}` : "N/A";
                 let fullname = (el.driverName).toLowerCase();
                 newDriverUnits.push({
                     show: fullname.includes(search),
@@ -79,7 +81,7 @@ const Dashboard = () => {
                     currentSpeed: el && el.speed + " mph",
                     marker: el && {
                         iconDeg: el.rotation,
-                        odometr,
+                        odometer,
                         speed: el.speed,
                         position: {
                             ...el.coordinates,
@@ -107,8 +109,8 @@ const Dashboard = () => {
             let firstUnits = JSON.parse(localStorage.getItem("firstUnits")) || [];
             let newUnits = [];
             drsTimers.data.vehicles.forEach((el, i) => {
-                const odometr = 62141;
-                // const odometr = el.tracking && el.tracking.odometr && el.tracking.odometr !== -1 ? `${el.tracking.odometr}` : "N/A";
+                const odometer = 62141;
+                // const odometer = el.tracking && el.tracking.odometer && el.tracking.odometer !== -1 ? `${el.tracking.odometer}` : "N/A";
                 let fullname = (el.driverName).toLowerCase();
                 newUnits.push({
                     show: fullname.includes(search),
@@ -125,7 +127,7 @@ const Dashboard = () => {
                     eld: el.eld_mode ? "ELD" : el.elog_mode ? "E-LOG" : "",
                     marker: el.coordinates && {
                         iconDeg: 0,
-                        odometr,
+                        odometer,
                         speed: el.speed,
                         position: {
                             ...el.coordinates,
@@ -212,7 +214,7 @@ const Dashboard = () => {
                 <Header />
                 <Sidebar />
                 <div className={`main-content ${isMinimize === 'minimize' ? 'minimize-main' : ''}`}>
-                    <div className="page-content dashboard-page-content">
+                    <div className={userType === "company-administrator" ? "page-content dashboard-page-content company-admin" : "page-content dashboard-page-content"}>
                         <div className="container-fluid">
                             <div className="row">
                                 <div className="col-12 col-md-3 dashboard_side-bar">

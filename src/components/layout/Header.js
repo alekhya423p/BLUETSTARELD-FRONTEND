@@ -2,7 +2,7 @@ import { Link, useNavigate } from "react-router-dom";
 import { useDispatch, useSelector } from "react-redux";
 import { useState, useEffect } from "react";
 import { logout } from "../../actions/authAction";
-import { getHeaderData } from "../../actions/dashboardAction";
+import { getDashboard, getHeaderData } from "../../actions/dashboardAction";
 import * as actionTypes from "../../constants/actionTypes";
 // import logoDay from '../../assets/BLE-Logo-White.png';
 import logoDay from "../../assets/Lucid ELD Logo-white.svg";
@@ -27,11 +27,11 @@ const Header = (props) => {
             user.user.userType === "system-technician" ||
             user.user.userType === "system-super-admin"
             : false;
-    // const allow_billing =
-    //     user && user.user && user.user.userType
-    //         ? user.user.userType !== "company-fleet-manager"
-    //         : true;
-    // const userType = user && user.user && user.user.userType;
+    const allow_billing =
+        user && user.user && user.user.userType
+            ? user.user.userType !== "company-fleet-manager"
+            : true;
+    const userType = user && user.user && user.user.userType;
     const navigate = useNavigate();
     const handleLogout = () => {
         dispatch(logout(navigate));
@@ -110,6 +110,14 @@ const Header = (props) => {
         props.handleClickMapTerrain();
         setChecked(false)
     };
+
+    const refresh =()=>{
+        dispatch(getDashboard(props?.truckStatus, props?.dutyStatus, props?.order, props?.search))
+        dispatch(getHeaderData());
+
+    }
+    const adminRoles = ["system-super-admin", "system-administrator"];
+
     return (
  
             <header id="page-topbar">
@@ -121,7 +129,7 @@ const Header = (props) => {
                         </div>
                     </div>
                 </div>
-                : user.user.userType === "system-super-admin" ?  
+                : adminRoles.includes(user.user.userType) ?  
                 <div className="top_header s-admin">
                     <div className="container">
                         <div className="row">
@@ -161,7 +169,7 @@ const Header = (props) => {
                         {/* {`vertical-menu ${isOpen}`} */}
                         <button
                             type="button"
-                            className="btn btn-sm px-2 font-size-24 header-item waves-effect d-sm-none d-block"
+                            className="btn btn-sm px-2 font-size-24 header-item waves-effect d-block mobile_menu_btn"
                             id="vertical-menu-btn1"
                             onClick={() => makeActive()}
                         >
@@ -178,7 +186,7 @@ const Header = (props) => {
                             <ul className="badges-new">
                                 <li>
                                     <div className="form-group">
-                                        <button type="button" className="btn btn d-block  mx-2">
+                                        <button onClick={()=>refresh()} type="button" className="btn btn d-block  mx-2">
                                             <i className="ti ti-refresh font-size-20"></i>
                                         </button>
                                     </div>
@@ -963,14 +971,14 @@ const Header = (props) => {
                                     {/* <Link className="dropdown-item" to="#"><i className=" ri-notification-3-line align-middle me-1"></i> Alerts </Link> */}
                                     {/* <Link className="dropdown-item" to="#"><i className="ri-star-s-line align-middle me-1"></i> What's New </Link> */}
                                     <div className="dropdown-divider m-0"></div>
-                                    {/* {allow_billing ? (
-                                        userType === "system-technician" ? null : ( */}
+                                    {allow_billing ? (
+                                        userType === "system-technician" ? null : (
                                             <Link className="dropdown-item" to="/billing">
                                                 <i className="ri-bank-card-line align-middle me-1"></i>{" "}
                                                 Billing{" "}
                                             </Link>
-                                        {/* ) */}
-                                    {/* ) : null} */}
+                                         ) 
+                                     ) : null} 
                                     {/* <Link className="dropdown-item " to="#"><i className="ri-shopping-cart-2-line align-middle me-1"></i> Web Store </Link> */}
                                     <div className="dropdown-divider m-0"></div>
                                     {/* <Link className="dropdown-item" to="#"><i className="mdi mdi-api  align-middle me-1"></i> API </Link> */}

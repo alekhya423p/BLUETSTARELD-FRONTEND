@@ -8,6 +8,7 @@ const defaultState = {
     saved_payments:[],
     defaultPayment: {},
     payments: [],
+    credits:'',
     loading: false,
     errors:{}
   }
@@ -48,6 +49,7 @@ const defaultState = {
                 ...state,
                 loading: false,
                 subscriptions: action.payload?.data,
+                credits:action.payload?.credit
             }
         case actionTypes.GET_BILLING_HISTORY_FAIL:
             return {
@@ -279,7 +281,7 @@ const defaultState = {
             return {
                 ...state,
                 loading: false,
-                subscriptions: state.subscriptions.map(item => item.id === action.payload.data.id ? action.payload.data : item),
+                cancel: state.subscriptions.map(item => item.id === action.payload.data.id ? action.payload.data : item),
                 message: action.payload.message,
                 status: action.payload.success
             }

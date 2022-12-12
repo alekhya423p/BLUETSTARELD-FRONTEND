@@ -14,12 +14,12 @@ const Vehicles = () => {
     const [searchKey, setSearchKey] = useState("");
     const [searchStatus, setSearchStatus] = useState("active");
     const { isMinimize, isMode } = useSelector(state => state.dashboard)
-    const { vehicles, count, totalRecord, loading } = useSelector(state => state.vehicles)
+    const { vehicles, count, totalRecord, totalVehcile, loading } = useSelector(state => state.vehicles)
     const itemsPerPage = 20
     const childRef = useRef();
     const userInfo = JSON.parse(localStorage.getItem("userInfo"));
     const subscriptionInfo = userInfo && userInfo.companyInfo && userInfo.companyInfo.subscription && userInfo.companyInfo.subscription.subscriptionInfo ? userInfo.companyInfo.subscription.subscriptionInfo : '';
-     const userType = userInfo && userInfo.user ? userInfo.user.userType : ''
+    const userType = userInfo && userInfo.user ? userInfo.user.userType : ''
     
 
     useEffect(() => {
@@ -45,11 +45,13 @@ const Vehicles = () => {
     // const setSelectedRowsCount = (newCount) => {
         // setSelectedCount(newCount);
     // };
+    const finalVehicleCount = totalVehcile === undefined ? 0 : totalVehcile
+    const countValue = subscriptionInfo?.vehicleCount === undefined ? 0 : subscriptionInfo?.vehicleCount;
      const navigate = useNavigate();
-    
+    // console.log(countValue,totalVehcile,finalVehicleCount >= countValue,50)
     const handleClick =() =>{
-        if(userType === "company-administrator" && vehicles.length >= subscriptionInfo?.vehicleCount){
-        toast.warning(`Your current subscription is only for up to ${subscriptionInfo?.vehicleCount} Active Vehicle, Please subscribe to more vehicles`)
+        if(userType === "company-administrator" && finalVehicleCount >= countValue){
+        toast.warning(`Your current subscription is only for up to ${countValue} Active Vehicle, Please subscribe to more vehicles`)
 
         navigate("/billing")
         }else if(userType === "system-technician" || userType === "system-administrator"){ 
@@ -67,7 +69,7 @@ const Vehicles = () => {
                 <Header pageHead={pageHead} />
                 <Sidebar />
                 <div className={`main-content ${isMinimize === 'minimize' ? 'minimize-main' : ''}`}>
-                    <div className="page-content">
+                    <div className={userType === "company-administrator" ? "page-content company-admin" : "page-content"}>
                         <div className="container-fluid">
                             <div className="row">
                                 <div className="col-12">

@@ -80,6 +80,7 @@ export const checkStatusChart = (st) =>
   st === "DS_D" ||
   st === "DS_SB" ||
   st === "DS_OFF" ||
+  // st === "INTER_NORMAL_PRECISION" ||
   st === "DR_IND_PC";
 
 //========== GET NUMBERS FOM DATE ==========
@@ -213,7 +214,7 @@ export const getEventCode = (status, certifyCount) => {
       return 1;
     }
     case "INTER_NORMAL_PRECISION": {
-      return 1;
+      return 2;
     }
     case "INTER_REDUCED_PERCISION": {
       return 2;
@@ -249,6 +250,7 @@ const getSecs = (date) => {
   const lDate = moment.tz(date, tz).set("millisecond", 0);
   return moment.duration(lDate.diff(startDate)).asSeconds();
 };
+
 // GET RECORD_STATUS 3 OVER 1
 const dateRangeOverlaps = (startA, endA, startR, endR) => {
   let bool = false;
@@ -371,6 +373,7 @@ export const getLogStatus = (log) => {
   }
   return log;
 };
+
 // CONVERT "event_code" TO event code STRING
 export const getLogEventCodeType = (log) => {
   if (log && log.eventCode) {
@@ -584,7 +587,7 @@ export const getSequenceId = (driverId) => {
 };
 
 export const getFilteredLogs = (data, inject = true) => {
-  let LOGS = data.logs && data.logs.length > 0 ? data.logs : [];
+let LOGS = data.logs && data.logs.length > 0 ? data.logs : [];
   let timestmp = serverTime(data.timestamp);
   const { startDate, tz } = times();
   const endDate = moment.tz(startDate, tz).endOf("day");
@@ -695,6 +698,7 @@ export const getHOSViolation = (events) => {
     }
     return errorLog
 };
+
 export const getHOSViolationCalculation = (events) => {
   // const { tz } = times();
   let errorLog = [];
@@ -722,4 +726,20 @@ export const getHOSViolationCalculation = (events) => {
     }
   }
   return errorLog
+};
+
+export const getHOSViolationCalculate = (eventlog) => {
+  // let unixTime = moment(events[i].startTime).valueOf()
+  if (eventlog === "30M_REST_BREAK") {
+    return `30 Minutes Break Required`;
+  }
+  if (eventlog === "14H_SHIFT_LIMIT") {
+    return `14 Shift Limit Required `;
+  }
+  if (eventlog === "70H_CYCLE_LIMIT") {
+    return `70 Cycle Limit Required`;
+  }
+  if (eventlog === "11H_DRIVE_LIMIT") {
+    return `11 Drive Limit`;
+  }
 };

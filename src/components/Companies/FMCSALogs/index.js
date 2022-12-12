@@ -1,15 +1,17 @@
 import React, { useState, useEffect } from "react";
-import { useDispatch } from "react-redux";
+import { useDispatch, useSelector } from "react-redux";
+import { loadCompaniesData } from "../../../actions/companyAction";
 // import Loading from "../layout/Loading";
 import DataTableFMCSA from "../Datatable/DataTableFMCSA";
 
 const FMCSALogs = (props) => {
   const dispatch = useDispatch();
-  const [searchKey, setSearchKey] = useState("");
+  const [searchKey, setSearchKey] = useState();
+  const { companiesData } = useSelector(state => state.companyDetail);
 
   useEffect(() => {
-    // dispatch(loadCompanyUsers());
-  }, [dispatch]);
+    dispatch(loadCompaniesData(searchKey));
+  }, [dispatch, searchKey]);
 
   const callSearch = (e) => {
     setSearchKey(e.target.value);
@@ -22,7 +24,7 @@ const FMCSALogs = (props) => {
         <div className="col-sm 12 col-md-8 flex-grow-1">
           {/* <form className="search-data_n"> */}
           <div className="row">
-            <div className="col col-md-4 col-sm-12 tob-section-option">
+            <div className="col col-md-7 col-sm-12 tob-section-option">
               <div className="form-group app-search p-0 ">
                 <label>&nbsp;</label>
                 <div className="position-relative">
@@ -31,22 +33,7 @@ const FMCSALogs = (props) => {
                     className="form-control font-size-11"
                     onBlur={callSearch}
                     defaultValue={searchKey}
-                    placeholder="Search by Company Name"
-                  />
-                  <span className="ti ti-search"></span>
-                </div>
-              </div>
-            </div>
-            <div className="col col-md-4 col-sm-12 tob-section-option">
-              <div className="form-group app-search p-0 ">
-                <label>&nbsp;</label>
-                <div className="position-relative">
-                  <input
-                    type="text"
-                    className="form-control font-size-11"
-                    onBlur={callSearch}
-                    defaultValue={searchKey}
-                    placeholder="Search by Driver Name"
+                    placeholder="Search by Company or Driver Name or status or Request Origin"
                   />
                   <span className="ti ti-search"></span>
                 </div>
@@ -76,7 +63,7 @@ const FMCSALogs = (props) => {
         <div className="col-12 text-center">
           <div className="mb-0 companies-table">
             <div className="table-responsives mb-0">
-              <DataTableFMCSA />
+              <DataTableFMCSA data={companiesData} />
             </div>
           </div>
         </div>

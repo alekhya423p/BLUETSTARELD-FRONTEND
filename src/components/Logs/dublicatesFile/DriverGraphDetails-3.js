@@ -36,10 +36,11 @@ const DriverGraphDetails = ({ history }) => {
     const dispatch = useDispatch();
     const params = useParams();
     const { driverLogDetails, event, events, loading } = useSelector(state => state.logs)
+    const { user } = useSelector(state => state.auth)
     const totalRecords = events ? events.length : 0
     const childRef = useRef();
-    const user = JSON.parse(localStorage.getItem("user"));
-    const tz = user && user.company && user.company.tz ? user.company.tz.value : "America/Los_Angeles";
+    const userInfo = JSON.parse(localStorage.getItem("user"));    
+    const tz = userInfo && userInfo.company && userInfo.company.tz ? userInfo.company.tz.value : "America/Los_Angeles";
     const date = moment.tz(params.logDate, "DD-MM-YYYY", tz);
     const [logDate, setLogDate] = useState('');
     const [startDate, setStartDate] = useState(date);
@@ -73,6 +74,8 @@ const DriverGraphDetails = ({ history }) => {
     const [transferWarning, setTransferWarning] = useState(false);
     const [infoLogModal, setInfoLogModal] = useState(false);
     const [today, setToday] = useState(false);
+    const { usertype } = useSelector(state => state.auth)
+    var userType = usertype && usertype.user && usertype.user.userType;
     // console.log(setLoader,setStartDate,success,isDriverOnline,statusWarnings, statusViolations, formViolations, driver, spinData, setNoteError);
     useEffect(() => {
         let cancel = false;
@@ -473,7 +476,7 @@ const DriverGraphDetails = ({ history }) => {
                         preVeh !== veh ||
                         log.status !== prevLog.status ||
                         log.note !== prevLog.note ||
-                        log.odometr !== prevLog.odometr ||
+                        log.odometer !== prevLog.odometer ||
                         log.engine_hours !== prevLog.engine_hours ||
                         log.record_status !== prevLog.record_status ||
                         log.creator !== prevLog.creator ||
@@ -559,7 +562,7 @@ const DriverGraphDetails = ({ history }) => {
                                 status,
                                 end,
                                 address: txtArr[4],
-                                odometr: txtArr[6],
+                                odometer: txtArr[6],
                                 engine_hours: txtArr[7],
                                 note: txtArr[8] && txtArr[8] !== "" ? txtArr[8] : `inserted!!!`,
                             };
@@ -691,7 +694,7 @@ const DriverGraphDetails = ({ history }) => {
                 <Header pageHead={pageHead} />
                 <Sidebar />
                 <div className={`main-content ${isMinimize === 'minimize' ? 'minimize-main' : ''}`}>
-                    <div className="page-content">
+                    <div className={userType === "company-administrator" ? "page-content company-admin" : "page-content"}>
                         <div className="container-fluid">
                             <div className="row">
                                 <div className="col-12">

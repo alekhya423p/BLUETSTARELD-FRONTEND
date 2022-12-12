@@ -8,6 +8,8 @@ const Resources = () => {
   const pageHead = "Resources";
   let dispatch = useDispatch();
   const { isMinimize } = useSelector((state) => state.dashboard);
+  const { user } = useSelector(state => state.auth)
+  var userType = user && user.user && user.user.userType;
   const { allResources } = useSelector((state) => state.resources);
 
   useEffect(() => {
@@ -23,7 +25,7 @@ const Resources = () => {
           isMinimize === "minimize" ? "minimize-main" : ""
         }`}
       >
-        <div className="page-content billing-page-sec">
+        <div className={userType === "company-administrator" ? "page-content billing-page-sec company-admin" : "page-content billing-page-sec"}>
           <div className="container">
             <div className="row">
               <div className="col-md-12 billing-box resources-pge">

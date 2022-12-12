@@ -5,21 +5,25 @@ import { Modal, Button } from 'react-bootstrap';
 import { useForm } from "react-hook-form";
 import * as yup from "yup";
 import { yupResolver } from '@hookform/resolvers/yup';
+import { useNavigate } from "react-router-dom";
 
 const CancelSubscription = (props) => {
 
     const dispatch = useDispatch()
+	const navigate = useNavigate();
 	const { isMode } = useSelector(state => state.dashboard)
+	
 	const userInfo = JSON.parse(localStorage.getItem("userInfo"));
 	const subscriptionInfo = userInfo && userInfo.companyInfo && userInfo.companyInfo.subscription && userInfo.companyInfo.subscription.subscriptionInfo ? userInfo.companyInfo.subscription.subscriptionInfo : '';
 
 	const validationSchema = yup.object().shape({
-		feedback: yup.string().required('Feedback is required'),
+		feedback: yup.string(),
 	});
 	const { register, handleSubmit, formState: { errors, ...formState } } = useForm({
 		mode: "onBlur",
 		resolver: yupResolver(validationSchema),
 	});
+
 	const { isValid } = formState
 	const onSubmit = async (values, e) => {
 		if(subscriptionInfo.stripeSubscriptionId){
@@ -27,10 +31,22 @@ const CancelSubscription = (props) => {
 				feedback: values.feedback,
 				subscriptionId: subscriptionInfo.stripeSubscriptionId,
 			};
-			dispatch(subscriptionCancel(dataValue));
+			dispatch(subscriptionCancel(dataValue)).then((res)=>{
+				setTimeout(() => {
+					navigate(0);
+				  }, 5000);
+			});	
 		}
 		props.close();
+		
 	};
+
+
+// 	if(Object.keys(subscriptionCancelUpdate)===0){
+// 		navigate(0)
+		
+//    }
+
 
 	return (
 		props.open && (

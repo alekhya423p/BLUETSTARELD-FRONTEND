@@ -28,12 +28,12 @@ const DataTableVehicle = forwardRef((props, ref) => {
               </tr>
           </thead>
           <tbody>
-          { data.length > 0  ? data.map((item, index) => (
+          { data && data.length > 0  ? data.map((item, index) => (
             <tr key={index}>
               <td>{item.vehicleNumber}</td>
               <td>{item.plateNumber ? item.plateNumber : 'N/A'}</td>
               <td>{item.year}</td>
-              <td>{item.make } / {item.vehicleModel}</td>
+              <td>{item.make } {item.vehicleModel ? '/' + item.vehicleModel : ''}</td>
               <td>{item.vin}</td>
               <td>{item.eldSerialNumber} {item.eldMacAddress ?  '(' + item.eldMacAddress + ')' : ''}</td>
               <td>{item.active === true ? 'Active' : 'Inactive'}</td>

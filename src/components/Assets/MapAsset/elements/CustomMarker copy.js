@@ -7,7 +7,7 @@ import "./style.css";
 
 import { v4 as uuidv4 } from "uuid";
 
-export const CustomMarker = ({ id, driver, iconDeg, label, position, speed, odometr, truckNo }) => {
+export const CustomMarker = ({ id, driver, iconDeg, label, position, speed, odometer, truckNo }) => {
   const [copyMsg, setCopyMsg] = useState(null);
   const [showInfo, setShowInfo] = useState(false);
   const iconRef = useRef(null);
@@ -17,7 +17,7 @@ export const CustomMarker = ({ id, driver, iconDeg, label, position, speed, odom
     { title: "Driver: ", value: driver},
     { title: "Status: ", value: label.status,},
     { title: "Address: ", value: label.address,},
-    { title: "Odometr: ", value: odometr,},
+    { title: "Odometer: ", value: odometer,},
     { title: "Speed: ",   value: speed,},
     { title: "Date: ", value: label.date,},
   ];

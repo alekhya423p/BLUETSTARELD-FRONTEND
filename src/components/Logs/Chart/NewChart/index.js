@@ -1,10 +1,7 @@
 import React, { Fragment, useEffect, useState } from 'react';
-// import chartNight from 'https://s3.amazonaws.com/company.resources/ChartNight.png';
-// import chartDay from 'https://s3.amazonaws.com/company.resources/ChartDay.png';
 import './style.css';
 import { verticalLine, logWidth, background } from './utils';
 import { times } from '../../utils';
-// import { EditRect } from './Components/EditRect'
 import { Duration } from './Components/Duration'
 import { Shifts } from './Components/Shifts'
 import { Cycles } from './Components/Cycles'
@@ -14,68 +11,48 @@ import { Violations } from './Components/Violations'
 import { Intermediates } from './Components/Intermediates'
 import { Certifies } from './Components/Certifies'
 import moment from 'moment-timezone';
+import dayLightSavingsTime from "./images/dayLightSavingsTime.svg";
+import chartDay from "./images/ChartDay.svg";
+import chartNight from "./images/ChartNight.svg";
 import { useSelector } from 'react-redux';
-import { base64 } from './base64images';
-// import { Base64 } from 'js-base64';
-// import axios from 'axios';
-// import {Buffer} from 'buffer';
 
-const NewChart = ({ logs = [], log, setLog, shifts, cycles, warnings, today, editing, handleEditRect, violations = [], inters, missInters, certifies, setSuccess, dayLightSavings }) => { 
+const NewChart = ({ logs = [], log, setLog, shifts, cycles, warnings, today, editing, handleEditRect, violations = [], inters, missInters, certifies, setSuccess, dayLight, isDownload }) => { 
   const { isMode } = useSelector(state => state.dashboard);
-  const [chart, setChart] = useState((dayLightSavings && dayLightSavings === true) ? base64.dayLight : (isMode === 'onMode') ? base64.chartNight : base64.chartDay);
+  const { dayLightSavings } = useSelector(state => state.logs);
+  const [chart, setChart] = useState((dayLightSavings === true) ? dayLightSavingsTime : (isMode === 'onMode') ? chartNight : chartDay);
   const { tz } = times();
 
-  // useEffect(() => {
-  //   axios
-  //     .get('https://s3.amazonaws.com/company.resources/DaylightGraph.png', {
-  //       responseType: 'arraybuffer'
-  //     }).then(response => {
-  //       let result = Buffer.from(response.data, 'binary').toString('base64')
-  //       console.log('data:image/gif;base64,'+ result, 'result')
-  //       // setChartDay('data:image/gif;base64,'+result);
-  //     }
-  //   );
-    
-  //   axios
-  //     .get('https://s3.amazonaws.com/company.resources/ChartDay.png', {
-  //       responseType: 'arraybuffer'
-  //     }).then(response => {
-  //       let result = Buffer.from(response.data, 'binary').toString('base64')
-  //       setChartNight('data:image/gif;base64,'+result);
-  //     }
-  //   );        
-  // },[]);
-
-   useEffect(() => {    
+    useEffect(() => {    
       let clickEvent = () => {
         setTimeout(() => {
-          setChart((dayLightSavings && dayLightSavings === true) ? base64.dayLight : (isMode === 'onMode') ? base64.chartNight :  base64.chartDay);
+          setChart((dayLightSavings === true) ? dayLightSavingsTime : (isMode === 'onMode') ? chartNight :  chartDay);
         }, 150);
-     };
-     const modeChanger = document.querySelector(".switch");
-     modeChanger && modeChanger.addEventListener("click", clickEvent);
+    };
 
-     return () => {
-        modeChanger && modeChanger.removeEventListener("click", clickEvent);
-     };
+    const modeChanger = document.querySelector(".switch");
+    modeChanger && modeChanger.addEventListener("click", clickEvent);
+
+    return () => {
+      modeChanger && modeChanger.removeEventListener("click", clickEvent);
+    };
     
    }, [isMode, dayLightSavings]);
 
    const onMouseOver = (index) => {
       let trs = document.querySelectorAll(".DriverLogRow tbody.body tr.item");
       if (trs) {
-         trs = Array.from(trs).filter((tr) => {
-            const status = tr.querySelector(".status-indicator");
+        trs = Array.from(trs).filter((tr) => {
+        const status = tr.querySelector(".status-indicator");
             if (status) {
-               return !status.classList.contains("notInfo");
+              return !status.classList.contains("notInfo");
             }
             return false;
          });
          trs.forEach((tr, i) => {
            if (i === index) {
-               tr.classList.add("hovered");
+              tr.classList.add("hovered");            
             } else {
-               tr.classList.remove("hovered");
+              tr.classList.remove("hovered");
             }
          });
       }
@@ -91,14 +68,15 @@ const NewChart = ({ logs = [], log, setLog, shifts, cycles, warnings, today, edi
       s = s > 0 ? `${s}s` : "";
       return h + m + s;
     };
-   const convertStart = (log) => {
+
+    const convertStart = (log) => {
       let secs = moment.tz(log.start_date, tz).format('HH:mm:ss');
       return secs
-   };
-   const convertEnd = (log) => {
+    };
+    const convertEnd = (log) => {
       let secs = moment.tz(log.end_date, tz).format('HH:mm:ss');
       return secs
-   };
+    };
 
    return (
       <div className="ChartWrapper">
@@ -122,19 +100,17 @@ const NewChart = ({ logs = [], log, setLog, shifts, cycles, warnings, today, edi
             {/* {missInters && missInters.length > 0 && <Intermediates inters={missInters} missInters/>} */}{" "}
             {inters && inters.length > 0 && (
               <Intermediates inters={inters} setSuccess={setSuccess} />
-            )}
+            )}  
             {certifies && certifies.length > 0 && (
               <Certifies certifies={certifies} setSuccess={setSuccess} />
             )}
             <Dst />
             {logs.map((log, i) => {
-
-              console.log(logs, 'logs');
               const nextLog = {
                 ...logs[i + 1],
               };
               const vertLine = verticalLine(nextLog.status, log.status, log.end);
-              const lWidth = logWidth(log.start, log.end);
+              const lWidth = logWidth(log.start, log.end, log.status);
               const logDuration = getTotal(log);
               const logStart = convertStart(log);
               const logEndDate = convertEnd(log);
@@ -159,13 +135,14 @@ const NewChart = ({ logs = [], log, setLog, shifts, cycles, warnings, today, edi
                     {" "}
                     {!editing.editing && (
                      <>
-                     <span className="logStart"> {logStart} </span>
-                     <span className="logEnd"> {logEndDate} </span>
+                     {/* timings display */}
+                     <span className="logStart">{logStart} </span>
+                     <span className="logEnd"> {logEndDate} </span>   
                      <span className="logDuration"> {logDuration} </span>
                      </>
                     )}{" "}
                   </span>
-  
+                    {/* vertical line  */}
                   {nextLog && vertLine && vertLine.height && (
                     <span className="vertical" style={vertLine}></span>
                   )}

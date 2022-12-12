@@ -34,12 +34,16 @@ export const createCompany = (formData, navigate) => async (dispatch) => {
         const { data } = await api.createCompany(formData);
         dispatch({ type: actionTypes.CREATE_COMPANY_SUCCESS, payload: data })
         dispatch({ type: actionTypes.CREATE_COMPANY_RESET})
-        toast.success(data.message);        
-        navigate('/companies')
+        toast.success(data?.message , {
+            onClose: () => {
+                navigate('/companies')
+            }
+        });        
+       
         
 
     } catch (err){
-        toast.error(err.response.data.message);
+        toast.error(err.response?.data?.message);
         dispatch({ type: actionTypes.CREATE_COMPANY_FAIL, payload: err.response.data.message })
     }
 }
@@ -103,6 +107,23 @@ export const loadCompanies = (searchKey= '', searchStatus= '', searchCompany= ''
         dispatch({ type: actionTypes.LOAD_COMPANIES_FAIL, payload: err.response.data })
     }
 }
+
+/**
+ * function for loadCompanies data
+ * @param {*} data loadcompanies data
+ * @description get companies data 
+ * @param { function } loadcompanies loadcompanies data function
+*/
+export const loadCompaniesData = (searchKey = '') => async dispatch => {
+    try {
+        dispatch({ type: actionTypes.LOAD_COMPANIES_DATA_REQUEST })
+        const { data } = await api.getCompaniesData(searchKey);
+        dispatch({ type: actionTypes.LOAD_COMPANIES_DATA_SUCCESS, payload: data })
+    } catch(err) {
+        dispatch({ type: actionTypes.LOAD_COMPANIES_DATA_FAIL, payload: err.response.data })
+    }
+}
+
 
 /**
 * function for loadCompanies

@@ -12,7 +12,7 @@ const DriverHos = () => {
     const { driverHos, count, totalRecord, loading } = useSelector(state => state.driverHos)  
     const { eventCodes } = useSelector(state => state.logs)  
     const { isMinimize, isMode } = useSelector(state => state.dashboard)
-
+    const { user } = useSelector((state) => state.auth);
     const [currentPage, setCurrentPage] = useState(1);
     const [searchKey, setSearchKey] = useState();    
     const [eldStatus, setEldStatus] = useState();    
@@ -20,6 +20,7 @@ const DriverHos = () => {
     const [violationStatus, setViolationStatus] = useState();
     const itemsPerPage = 20;
     const childRef = useRef();
+    var userType = user && user.user && user.user.userType;
 
     useEffect(() => {
         dispatch(getEventCode());
@@ -32,7 +33,7 @@ const DriverHos = () => {
         setEldStatus('');
         setDutyStatus('');
         setViolationStatus('');     
-        dispatch(getAllDriverHos('', '', '', '', ''));
+        dispatch(getAllDriverHos(currentPage, searchKey, eldStatus, dutyStatus, violationStatus));
     }
 
     const pageHead = `Driver HOS(${count ? count : 0})`
@@ -47,7 +48,7 @@ const DriverHos = () => {
             <Header pageHead={pageHead} />
             <Sidebar />
             <div className={`main-content ${isMinimize === 'minimize' ? 'minimize-main' : ''}`}>
-                <div className="page-content">
+                <div className={userType === "company-administrator" ? "page-content company-admin" :"page-content"}>
                     <div className="container-fluid">
                          {/* start page title  */}
                          <div className="row">
@@ -73,8 +74,8 @@ const DriverHos = () => {
                                                         <div>
                                                             <select className="form-select" value={eldStatus} onChange={e => setEldStatus(e.target.value)}>
                                                                 <option value="">All</option>
-                                                                <option value="connected">Connected</option>
-                                                                <option value="disconnected">Disconnected</option>
+                                                                <option value="Connected">Connected</option>
+                                                                <option value="Disconnected">Disconnected</option>
                                                             </select>    
                                                         </div>
                                                     </div>
@@ -84,9 +85,9 @@ const DriverHos = () => {
                                                         <label>Filter by Duty Status</label>
                                                         <select className="form-select" value={dutyStatus} onChange={e => setDutyStatus(e.target.value)}>
                                                             <option value="">All</option>
-                                                            {eventCodes.map((e,key) => {
-                                                                return <option key={key} value={e.id}>{e.value}</option>
-                                                            })}                                     
+                                                            {eventCodes.map((e,key) => (
+                                                                ( key <= 5) ? <option key={key} value={e.id}>{e.value}</option> : ''
+                                                            ))}                                     
                                                         </select>
                                                     </div>
                                                 </div>

@@ -13,10 +13,12 @@ const ELD = () => {
   const [currentPage, setCurrentPage] = useState(1);
   const [searchKey, setSearchKey] = useState("");
   const { isMinimize, isMode } = useSelector(state => state.dashboard)
+  const { user } = useSelector(state => state.auth)
   const [searchStatus, setSearchStatus] = useState("active");
   const { elddevices, count, totalRecord, loading } = useSelector(state => state.elddevice)
   const itemsPerPage = 20
   const childRef = useRef();
+  var userType = user && user.user && user.user.userType;
  
   useEffect(() => {
     dispatch(getELDDevices(currentPage, searchKey, searchStatus));
@@ -50,7 +52,7 @@ const ELD = () => {
         <Header pageHead={pageHead} />
         <Sidebar />
         <div className={`main-content ${isMinimize === 'minimize' ? 'minimize-main' : ''}`}>
-          <div className="page-content">
+          <div className={userType === "company-administrator" ? "page-content company-admin" : "page-content"}>
             <div className="container-fluid">
               <div className="row">
                 <div className="col-12">

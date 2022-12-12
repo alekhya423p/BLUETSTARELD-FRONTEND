@@ -1,4 +1,4 @@
-import React, { useEffect } from "react";
+import React, { useEffect, useState } from "react";
 import { reassignEventByTechnician } from '../../../../actions/logAction';
 import { useDispatch, useSelector } from "react-redux";
 import { Modal, Button } from 'react-bootstrap';
@@ -8,6 +8,8 @@ import { useParams } from "react-router-dom";
 // import moment from "moment";
 import * as yup from "yup";
 import { yupResolver } from '@hookform/resolvers/yup';
+import Select from 'react-select';
+
 const ReassignEvent = (props) => {
 	
 	const params = useParams();
@@ -18,14 +20,17 @@ const ReassignEvent = (props) => {
     const validationSchema = yup.object().shape({
 		driverId: yup.string().required('Driver is required'),
 	})
-	const { register, setValue, handleSubmit, formState: { errors, ...formState } } = useForm({
+	const { setValue, handleSubmit, formState: { errors, ...formState } } = useForm({
 		mode: "onBlur",
 		resolver: yupResolver(validationSchema),
 	});
 
-	const { isValid } = formState
+	const { isValid } = formState;
+	const [codriver, setCoDriver] = useState("");
+	const [options, setOptions] = useState();
+	
 	const onSubmit = async (values, e) => {
-		const dataValue = {
+	const dataValue = {
 			logDate: props.logDate,
 			driverId: values.driverId,
 			logId: props.logId ? props.logId : "",
@@ -37,9 +42,26 @@ const ReassignEvent = (props) => {
 		props.close();
 	};
 
+	const handleAssignDriver = (e) => {
+		setCoDriver(e);
+		setValue('driverId', e.value);
+	};
+
 	useEffect(() => {
 		setValue('driverId' , params.id)
 	}, [props,params ,setValue]);
+
+	useEffect(() => {
+		if (masterDrivers) {
+			var options = masterDrivers?.map((item, index) => {
+			  return { value: item.id, label: item.name }
+			});
+			var ops = options.filter(
+				({ value }) => !props.driverId.includes(value)
+			);
+		  }
+		setOptions(ops);
+	},[masterDrivers, props]);
 
 	return (
 		props.open && (
@@ -50,18 +72,16 @@ const ReassignEvent = (props) => {
 				</Modal.Header>
 				<Modal.Body>
 					<form className="search-data add-driver" onSubmit={handleSubmit(onSubmit)}>
-                    <div className='col-sm-12 pt-3'>
+						<div className='col-sm-12 pt-3'>
 							<div className='row'>
 								<div className='col-sm-3'>
 									<label>Driver<span className="text-danger">*</span></label>
 								</div>
 								<div className='col-sm-9'>
-									<select className="form-select" {...register('driverId')} name="driverId">
-										<option value={''}>Select User</option>
-										{masterDrivers.map((item, index) => (
-											<option key={index} value={item.id}>{item.name }</option>
-										))}
-									</select>
+									<Select className="select-boz-style"
+                                      onChange={(e) => handleAssignDriver(e)} 
+                                      value={codriver}
+                                      options={options} placeholder="" name="driverId" />
 									{errors.driverId && (
 										<div className="text-danger">{errors.driverId.message}</div>
 									)}

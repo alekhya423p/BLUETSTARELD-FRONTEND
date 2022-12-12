@@ -10,12 +10,13 @@ const Assets = () => {
     const dispatch = useDispatch()
     const { assets, count, totalRecord, loading } = useSelector(state => state.assets)
     const { isMinimize, isMode } = useSelector(state => state.dashboard)
+    const { user } = useSelector((state) => state.auth);
     const [currentPage, setCurrentPage] = useState(1);
     const [searchkey, setSearchKey] = useState();
     const itemsPerPage = 20
     const childRef = useRef();
     const pageHead = `Assets(${count ? count : 0})`
-    
+    var userType = user && user.user && user.user.userType;
 
     useEffect(() => {
         dispatch(getAllAssets(currentPage, searchkey))
@@ -38,7 +39,7 @@ const Assets = () => {
             <Header pageHead={pageHead} />
             <Sidebar />
             <div className={`main-content ${isMinimize === 'minimize' ? 'minimize-main' : ''}`}>
-                <div className="page-content">
+                <div className={userType === "company-administrator" ? "page-content company-admin" : "page-content"}>
                     <div className="container-fluid">
                          {/* start page title  */}
                          <div className="row">

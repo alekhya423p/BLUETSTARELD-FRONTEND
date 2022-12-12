@@ -94,7 +94,7 @@ export const MapAsset = ({ markers, setMaptypeId }) => {
               label={mar.label}
               position={mar.position}
               speed={mar.speed}
-              odometr={mar.odometr}
+              odometer={mar.odometer}
               truckNo={mar.truckNo}
             />
           ))}{" "} */}
@@ -108,7 +108,7 @@ export const MapAsset = ({ markers, setMaptypeId }) => {
               label={mar.label}
               position={mar.position}
               speed={mar.speed}
-              odometr={mar.odometr}
+              odometer={mar.odometer}
               truckNo={mar.truckNo}
               clusterer={clusterer}
             />

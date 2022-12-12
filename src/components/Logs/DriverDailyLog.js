@@ -22,10 +22,12 @@ const DriverLogDetails = (props) => {
     const [fromDate, setFromDate] = useState(+new Date() - 12096e5);
     const [toDate, setToDate] = useState(new Date());
     const { filterDates, logDetails, count, totalRecord, loading } = useSelector(state => state.logs)
+    const { user } = useSelector(state => state.auth)
     const [searchDate, setSearchDate] = useState(filterDates.start ? moment(filterDates.start).format('YYYY-MM-DD') + '/' + moment(filterDates.end).format('YYYY-MM-DD') : '');
     const { isMinimize, isMode } = useSelector(state => state.dashboard)
     const itemsPerPage = 20;
     const childRef = useRef();
+    var userType = user && user.user && user.user.userType;
 
     const range = {
         Today: [moment(), moment()],
@@ -85,7 +87,7 @@ const DriverLogDetails = (props) => {
             <Header pageHead={pageHead} />
             <Sidebar/>
             <div className={`main-content ${isMinimize === 'minimize' ? 'minimize-main' : ''}`}>
-                <div className="page-content">
+                <div className={userType === "company-administrator" ? "page-content company-admin" :"page-content"}>
                     <div className="container-fluid">
                          {/* start page title  */}
                          <div className="row">

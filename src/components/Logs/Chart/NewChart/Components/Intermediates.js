@@ -18,8 +18,9 @@ export const Intermediates = ({ inters=[], missInters=false, setSuccess }) => {
          
          domInters.forEach((el, i) => { 
             const st = el.querySelector('.status-indicator');
-            if(st && st.textContent.includes('INTER_NORMAL_PRECISION')) {
+            if(st && st.innerHTML.trim() === "Intermediate"){
                if(index === intIndex) {
+                  console.log(index, intIndex, 'intindex');
                   hover ? el.classList.add('hovered') : el.classList.remove('hovered'); 
                }
                intIndex += 1;
@@ -28,33 +29,33 @@ export const Intermediates = ({ inters=[], missInters=false, setSuccess }) => {
       }
    }
 
-   const onCopyTime = (time) => {
-      let text = time
-      let textArea = document.createElement("textarea");
-      textArea.value = text;
+   // const onCopyTime = (time) => {
+   //    let text = time
+   //    let textArea = document.createElement("textarea");
+   //    textArea.value = text;
       
-      // Avoid scrolling to bottom
-      textArea.style.top = "0";
-      textArea.style.left = "0";
-      textArea.style.position = "fixed";
+   //    // Avoid scrolling to bottom
+   //    textArea.style.top = "0";
+   //    textArea.style.left = "0";
+   //    textArea.style.position = "fixed";
 
-      document.body.appendChild(textArea);
-      textArea.focus();
-      textArea.select();
+   //    document.body.appendChild(textArea);
+   //    textArea.focus();
+   //    textArea.select();
 
-      try {
-         let successful = document.execCommand('copy');
-         let msg = successful ? 'successfull' : 'unsuccessfull';
-         if(successful) {
-            console.log('Copying is ' + msg);
-            setSuccess(`Time copied to clipboard`);
-         }
-      } catch (err) {
-         console.error('Fallback: Oops, unable to copy', err);
-      }
+   //    try {
+   //       let successful = document.execCommand('copy');
+   //       let msg = successful ? 'successfull' : 'unsuccessfull';
+   //       if(successful) {
+   //          console.log(msg);
+   //          setSuccess(`Time copied to clipboard`);
+   //       }
+   //    } catch (err) {
+   //       console.error('Fallback: Oops, unable to copy', err);
+   //    }
 
-      document.body.removeChild(textArea)
-   }
+   //    document.body.removeChild(textArea)
+   // }
 
    return (
       inters.map((el, i) => {
@@ -67,14 +68,14 @@ export const Intermediates = ({ inters=[], missInters=false, setSuccess }) => {
                style={{ ...point }}
                onMouseOver={() => onMouseHover(i) }
                onMouseLeave={() => onMouseHover(i, false) }
-               onClick={() => onCopyTime(time)}
+               // onClick={() => onCopyTime(time)}
             >
                <span 
                   className="Inter_time" 
                   style={{
                      color: missInters ? 
                         '#EB5757' : 
-                        (el.status === 'DS_D' ? '#2cbd68' : '#858e9e')}} >
+                        (el.status === 'DS_D' ? '#12B76A' : '#858e9e')}} >
                   {time}
                </span>
             </div>

@@ -47,9 +47,9 @@ export const Certifies = ({certifies=[], setSuccess}) => {
 
       try {
          let successful = document.execCommand('copy');
-         let msg = successful ? 'successfull' : 'unsuccessfull';
+         // let msg = successful ? 'successfull' : 'unsuccessfull';
          if(successful) {
-            console.log('Copying is ' + msg);
+            // console.log('Copying is ' + msg);
             setSuccess(`Driver signature copied to clipboard`);
          }
       } catch (err) {

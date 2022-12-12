@@ -12,6 +12,8 @@ import DataTableFmcsaRecords from './dataTables/DataTableFmcsaRecords';
 const FmcsaRecords = () => {
     const dispatch = useDispatch();
     const { isMinimize, isMode } = useSelector(state => state.dashboard)
+    const { user } = useSelector(state => state.auth)
+    var userType = user && user.user && user.user.userType;
     const [searchKey, setSearchKey] = useState("");
     const childRef = useRef();
     const [searchDate, setSearchDate] = useState("");
@@ -49,7 +51,7 @@ const FmcsaRecords = () => {
         setFromDate(start._d.toISOString());
         setToDate(end._d.toISOString());
         setSearchDate(moment(start._d).format('YYYY-MM-DD') + '/' + moment(end._d).format('YYYY-MM-DD'));
-        // console.log(start, end, 'kamal');
+        
     }
 
     useEffect(() => {
@@ -68,7 +70,7 @@ const FmcsaRecords = () => {
             <Header pageHead={pageHead} />
             <Sidebar />
             <div className={`main-content ${isMinimize === 'minimize' ? 'minimize-main' : ''}`}>
-                <div className="page-content">
+                <div className={userType === "company-administrator" ? "page-content company-admin" : "page-content"}>
                     <div className="container-fluid">
                         {/* start page title  */}
                          <div className="row">

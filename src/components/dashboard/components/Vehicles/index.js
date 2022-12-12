@@ -2,9 +2,14 @@ import React, {useState} from "react";
 import { Link } from "react-router-dom";
 import moment from "moment-timezone";
 import moveArrow from "../../../../assets/move-arrow.svg";
+import LocationModal from "./LocationModal";
 
 const VehicleTab = (props) => {
     const [inputMenu, setMenu] = useState('');
+    const [locationModal ,setLocationModal] =useState(false)
+    const [vehicleId , setVehicleId] = useState('');
+    const [historyLocation , setHistoryLocation] = useState('')
+    const [driverId , setDriverId] = useState('');
     const user = JSON.parse(localStorage.getItem("userInfo"));
     const tz = user && user.companyInfo && user.companyInfo.timeZoneId ? user.companyInfo.timeZoneId : "America/Los_Angeles";
 
@@ -19,6 +24,16 @@ const VehicleTab = (props) => {
         }else{
             e.currentTarget.classList.add('active');
         }
+    }
+    const handleClick=(e,item)=>{
+        setLocationModal(true);
+        setDriverId(item.driverId)
+        setVehicleId(item.truckId)
+        setHistoryLocation(item.history)
+    }
+    
+    const handleUpdateSubsModalClose = () => {
+      setLocationModal(false)
     }
 
     return (
@@ -46,15 +61,18 @@ const VehicleTab = (props) => {
                     </div>
                 </div>
             </div>
+            <LocationModal open={locationModal} close ={handleUpdateSubsModalClose} driverId={driverId} vehicleId={vehicleId} historyLocation={historyLocation}/>
+            {/* <LiveShareHistoryModal open={locationModal} close ={handleUpdateSubsModalClose} /> */}
             <div className="row scroll-seventh">
                 {props.vehicles.length > 0 ?  props.vehicles.map((item, index) => (
                     <div className={(inputMenu === item) ? "seventh active" : "seventh"} onClick={(e) => {props.getUnitsOnMap([item], e); makeActive(item, e); getActiveClass(e);}}  key={index}>
                         <ul className="list-unstyled">
                             <li>
-                                <div>
+                                <div>                                    
                                     <span className="tag_mrgn plane_icon_span">
                                      {item.vehicleStatus === 'STATIONARY' ? 
                                         <i className="ri-checkbox-blank-circle-fill text-success"></i> : item.vehicleStatus === 'INACTIVE' ? <i className="ri-checkbox-blank-circle-fill font-size-18"></i> : <img src={moveArrow} alt="logo-sm" height="18" /> }
+                                       
                                     </span>                                     
                                     <span onClick={() => props.getUnitsOnMap(item)} className="text-muted vehicle-text">
                                         <Link to={`/dashboard/vehicle/${item.truckNo}/${item.truckId}`}><b>{item.truckNo}</b></Link>
@@ -62,9 +80,10 @@ const VehicleTab = (props) => {
                                     <span className={item.vehicleStatus === "STATIONARY" || item.vehicleStatus === 'INACTIVE' ? '' : 'text-success'}>{ item.vehicleStatus === "STATIONARY" ? item.vehicleStatus : item.vehicleStatus === 'INACTIVE' ? "Offline" : item.currentSpeed }</span> 
                                     {/* <label className="gas_label"><i className="ti ti-gas-station"></i>{item.fuelLevel}%</label> */}
                                 </div>
-                                <div>
-                                    <i className="ti ti-link" onClick={() => props.handleNewReport()}></i>
+                                <div>                                    
+                                    <i className={item.history.length > 0?"ti ti-link blue_link":"ti ti-link"} onClick={(e) => handleClick(e,item)}></i>
                                 </div>
+                                
                             </li>
                             <li>
                                 <div>
@@ -82,10 +101,10 @@ const VehicleTab = (props) => {
                                     <span className={`badge custom-badges ${item.status}`}>{item.status}</span>
                                     {item.driver}
                                 </div>
-                                <div>
+                                {/* <div>
                                     <i className="ti ti-phone"></i>
                                     <i className="ti ti-clock"></i>
-                                </div>
+                                </div> */}
                             </li>
                             <li>
                                 <div>
@@ -93,13 +112,12 @@ const VehicleTab = (props) => {
                                     {item.coDriverName ? item.coDriverName : ''}
                                 </div>
                                 <div>
-                                    {item.coDriverName ?
+                                    {/* {item.coDriverName ?
                                         <>
                                             <i className="ti ti-phone"></i>
                                             <i className="ti ti-clock"></i>
                                         </>
-                                        : ''}
-
+                                        : ''} */}
                                 </div>
                             </li>
                         </ul>

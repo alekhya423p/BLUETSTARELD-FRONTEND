@@ -27,6 +27,7 @@ const VehicleForm = () => {
   const { user } = useSelector((state) => state.auth);
   const { masterElds } = useSelector(state => state.elddevice)
   const { isMinimize, isMode } = useSelector(state => state.dashboard)
+  var userType = user && user.user && user.user.userType;
 
   const validationSchema = yup.object().shape({
     vehicleNumber: yup.string().required("Vehicle Number is required").matches(ALPHABATES_NUMERIC, 'Only alphanumeric values are allowed for vehicle number').min(1, 'Vehicle Id should be greater than 1').max(10, 'Vehicle Id should be less than 10').test('vehicleNumber', 'Vehicle Number is required', (value) => value?.trim()),
@@ -95,15 +96,15 @@ const VehicleForm = () => {
       setValue('eld', vehicle.eld)
       setValue('year', vehicle.year)
       setValue('fuelType', vehicle.fuelType)
-      //setValue('vehicle', vehicle.vehicle)
+      setValue('vehicle', vehicle.vehicle)
       setValue('make', vehicle.make)
-     // setValue('model', vehicle.vehicleModel)
+      setValue('model', vehicle.vehicleModel)
       setValue('plateNumber', vehicle.plateNumber)
       setValue('plateLicenseState', vehicle.plateState)
       setValue('companyId', user.companyId)
       setInputMake(vehicle.make);
       setInputPlateNumber(vehicle.plateNumber);
-      //setInputVehicleModel(vehicle.vehicleModel);
+      setInputVehicleModel(vehicle.vehicleModel);
       setInputVehicleNumber(vehicle.vehicleNumber);
       setInputVehicleTitle("Edit");
       setInputIsDisabled(true)
@@ -111,12 +112,12 @@ const VehicleForm = () => {
     } else {
       setValue('vehicleNumber', '')
       setValue('eld', '')
-     // setValue('vehicle', '')
+      setValue('vehicle', '')
       setValue('make', '')
       setValue('model', '')
       setValue('year', '')
       setValue('fuelType', '')
-      //setValue('vehicleModel', '')
+      setValue('vehicleModel', '')
       setValue('plateNumber', '')
       setValue('companyId', user.companyId)
       setInputMake("");
@@ -230,7 +231,7 @@ const VehicleForm = () => {
         <Header pageHead={pageHead} />
         <Sidebar />
         <div className={`main-content ${isMinimize === 'minimize' ? 'minimize-main' : ''}`}>
-          <div className="page-content" style={{ background: "#eff3f6" }}>
+          <div className={userType === "company-administrator" ? "page-content company-admin" : "page-content"} style={{ background: "#eff3f6" }}>
             <div className="container-fluid">
               {/* <!-- start page title --> */}
               <div className="row loader_class">

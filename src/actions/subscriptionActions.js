@@ -80,7 +80,10 @@ export const updatePaymentMethod = (formData) => async dispatch => {
         }
             return data.data;
         })
-        .catch((error) => console.log(error))   
+        .catch((error) => {
+            
+           
+        })   
         toast.success("Payment method update successfully");
         dispatch(refreshToken());
         //if(data) dispatch(getPaymentMethods(custId));
@@ -104,9 +107,10 @@ export const subscriptionUpdate = (userData ,customerId) => async (dispatch, get
         dispatch({ type: actionTypes.UPDATE_SUBSCRIPTION_REQUEST })
         const { data } = await api.updateSubscription(userData)
        
-        dispatch(refreshToken(data));
+        dispatch(refreshToken(data.customerId));
+        // console.log(data,111)
         dispatch(getBillingHistory({
-            customerId:data?.data?.customer
+            customerId:data?.data?.customerId
         }));
         dispatch({ type: actionTypes.UPDATE_SUBSCRIPTION_SUCCESS, payload: data })
         
@@ -130,9 +134,11 @@ export const changeSubscriptionStatus = (userData,customerId) => async (dispatch
     try {
         dispatch({ type: actionTypes.UPGRADE_SUBSCRIPTION_REQUEST })
         const { data } = await api.updateSubscriptionStatus(userData)
+        // console.log(data?.data?.customer,111)
+
         dispatch(refreshToken());
         dispatch(getBillingHistory({
-            customerId:customerId
+            customerId:data?.data?.customer
         }));
         dispatch({ type: actionTypes.UPGRADE_SUBSCRIPTION_SUCCESS, payload: data })
         dispatch({ type: actionTypes.UPGRADE_SUBSCRIPTION_RESET })
@@ -191,6 +197,7 @@ export const subscriptionCancel = (formData) => async dispatch => {
         dispatch(refreshToken());
         dispatch({ type: actionTypes.CANCEL_SUBSCRIPTION_SUCCESS, payload: data })
         toast.success(data.message);
+        
     } catch (err){
        
         toast.error(err.response.data.message);

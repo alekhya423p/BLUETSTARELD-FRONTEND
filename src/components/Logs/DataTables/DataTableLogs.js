@@ -6,7 +6,10 @@ import moment from 'moment'
 import { Tooltip } from "../../layout/Comman/Tooltip";
 
 const DataTableLogs = forwardRef((props, ref) => {
+
   let data = props.data;
+  console.log("dataitem",props);
+
   return (
     <>
       <div className="mb-0">
@@ -14,15 +17,19 @@ const DataTableLogs = forwardRef((props, ref) => {
           <thead>
             <tr>
               <th valign="middle" width="10%">DRIVER<i className="ti ti-arrow-narrow-down font-size-14"></i></th>
+              <th valign="middle" width="10%">DRIVER ID<i className="ti ti-arrow-narrow-down font-size-14"></i></th>
+
               <th valign="middle" width="10%">HOS VIOLATIONS</th>
               <th width="10%" valign="middle" align="center">FORMS & MANNER ERRORS</th>
               <th width="10%">LAST SYNC</th>
             </tr>
           </thead>
           <tbody>
-            { data.length > 0 ? data.map((item, index) => (
+            { data && data.length > 0 ? data.map((item, index) => (
               <tr key={index}>
                 <td><Link to={`/driver/${item.driverId}`}>{item.driverName}</Link></td>
+                <td>{item?.userName}</td>
+
                 <td>{item.hosViolation && item.hosViolation.length > 0  ? 
                   <span className="text-danger">
                   <Tooltip

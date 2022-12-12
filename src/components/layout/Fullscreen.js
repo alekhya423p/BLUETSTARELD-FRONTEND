@@ -1,12 +1,12 @@
 import { useDispatch, useSelector } from "react-redux";
 import { useState, useEffect, useCallback } from "react";
-import { getHeaderData } from "../../actions/dashboardAction";
+import { getDashboard, getHeaderData } from "../../actions/dashboardAction";
 import logoDay from '../../assets/Lucid ELD Logo-white.svg';
 import logoNight from '../../assets/Lucid-ELD-Logo.svg';
 import greenCircle from '../../assets/green-circle.svg';
 import moveArrow from '../../assets/move-arrow.svg';
 import stopPoint from '../../assets/stop-point.svg';
-import { event } from "jquery";
+// import { event } from "jquery";
 
 
 const Fullscreen = (props) => {
@@ -65,10 +65,15 @@ const Fullscreen = (props) => {
             document.removeEventListener("keydown", escFunction);
         };
         
-// eslint-disable-next-line react-hooks/exhaustive-deps
+    // eslint-disable-next-line react-hooks/exhaustive-deps
     }, []);
    
-    console.log(event, "event");
+    // console.log(event, "event");
+    const refresh =()=>{
+        dispatch(getDashboard(props?.truckStatus, props?.dutyStatus, props?.order, props?.search))
+        dispatch(getHeaderData());
+
+    }
 
     return (
         <header id="page-topbar">
@@ -110,7 +115,7 @@ const Fullscreen = (props) => {
                     <ul className="badges-new">
                             <li>
                                 <div className="form-group">
-                                    <button type="button" className="btn btn d-block  mx-2"><i className="ti ti-refresh font-size-20"></i></button>
+                                    <button onClick={()=>refresh()} type="button" className="btn btn d-block  mx-2"><i className="ti ti-refresh font-size-20"></i></button>
                                 </div>
                             </li>
                         </ul>

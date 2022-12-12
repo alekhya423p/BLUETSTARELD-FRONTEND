@@ -8,7 +8,7 @@ import DeactivateModal from "./DeactivateModal";
 
 const SystemUsers = (props) => {
   const dispatch = useDispatch();
-  const [searchStatus, setsearchStatus] = useState("true");
+  const [searchStatus, setsearchStatus] = useState("active");
   const [searchKey, setSearchKey] = useState("");
   const [currentPage, setCurrentPage] = useState(1);
   const [showDeactivateModal, setDeactivateModal] = useState(false);
@@ -68,8 +68,8 @@ const SystemUsers = (props) => {
                   value={searchStatus}
                   onChange={(e) => setsearchStatus(e.target.value)}
                 >
-                  <option value="true">Active</option>
-                  <option value="false">Inactive</option>
+                  <option value="active">Active</option>
+                  <option value="inactive">Inactive</option>
                 </select>
               </div>
             </div>

@@ -29,9 +29,13 @@ const Logs = () => {
     
 
     const { logs, count, totalRecord, loading } = useSelector(state => state.logs)
+    //const { logs } = useSelector(state => state.logs)
+
     const { isMinimize, isMode } = useSelector(state => state.dashboard)
-    const { drivers } = useSelector(state => state.drivers)
+    const { user } = useSelector(state => state.auth)
+    const { drivers} = useSelector(state => state.drivers)
     const childRef = useRef();
+    var userType = user && user.user && user.user.userType;
 
     const range = {
         Today: [moment(), moment()],
@@ -81,7 +85,7 @@ const Logs = () => {
         setViolationStatus('')
         setSearchKey("");
         setMannerErrors("");
-        dispatch(getLogs());
+        dispatch(getLogs(currentPage, searchKey, searchDate, mannererrors, violationStatus));
     }
 
     const handleAddModalClose = () => {
@@ -110,7 +114,7 @@ const Logs = () => {
             <Header pageHead={pageHead} />
             <Sidebar/>
             <div className={`main-content ${isMinimize === 'minimize' ? 'minimize-main' : ''}`}>
-                <div className="page-content">
+                <div className={userType === "company-administrator" ? "page-content company-admin" : "page-content"}>
                     <div className="container-fluid">
                          {/* start page title  */}
                          <div className="row">

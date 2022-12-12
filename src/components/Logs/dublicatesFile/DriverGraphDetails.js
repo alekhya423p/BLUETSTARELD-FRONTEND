@@ -42,13 +42,14 @@ const DriverGraphDetails = ({ history }) => {
     const dispatch = useDispatch();
     const { isMinimize, isMode } = useSelector(state => state.dashboard)
     const {driverData, event, loading } = useSelector(state => state.logs)
+    const { user } = useSelector(state => state.auth)
     // const driverData = data;
     const params = useParams();
     const [showAddAdminModal, setAddAdminModal] = useState(false);
     const [selectedRowData, setSelectedRowData] = useState(false);
     const shouldIShow = JSON.parse(localStorage.getItem("shouldIShow"));
-    const user = JSON.parse(localStorage.getItem("userInfo"));
-    const tz = user && user.companyInfo ? user.companyInfo.timeZoneId : "America/Los_Angeles";
+    const userInfo = JSON.parse(localStorage.getItem("userInfo"));
+    const tz = userInfo && userInfo.companyInfo ? userInfo.companyInfo.timeZoneId : "America/Los_Angeles";
     // const nMode = JSON.parse(localStorage.getItem("nMode"));
     const queryString = window.location.pathname.split("/");
     const hash = queryString[queryString.length - 1];
@@ -56,6 +57,7 @@ const DriverGraphDetails = ({ history }) => {
     let convertDate = moment.tz(hash, 'DD/MM/YYYY', tz).format('YYYY-MM-DD')
     const [logDate, setLogDate] = useState(convertDate);
     const date = moment.tz(hash, "DD-MM-YYYY", tz);
+    const userType = user && user.user && user.user.userType;
     // const allow_normalize = user && user.config && user.config.allow_normalize;
     const allow_correction = user && user.config && user.config.allow_correction;
     const [startDate, setStartDate] = useState(date);
@@ -344,7 +346,7 @@ const DriverGraphDetails = ({ history }) => {
                         preVeh !== veh ||
                         log.status !== prevLog.status ||
                         log.note !== prevLog.note ||
-                        log.odometr !== prevLog.odometr ||
+                        log.odometer !== prevLog.odometer ||
                         log.engine_hours !== prevLog.engine_hours ||
                         log.record_status !== prevLog.record_status ||
                         log.creator !== prevLog.creator ||
@@ -430,7 +432,7 @@ const DriverGraphDetails = ({ history }) => {
                                 start,
                                 end,
                                 address: txtArr[4],
-                                odometr: txtArr[6],
+                                odometer: txtArr[6],
                                 engine_hours: txtArr[7],
                                 note: txtArr[8] && txtArr[8] !== "" ? txtArr[8] : `${status} inserted!!!`,
                             };
@@ -550,7 +552,7 @@ const DriverGraphDetails = ({ history }) => {
                 <Header pageHead={pageHead} />
                 <Sidebar />
                 <div className={`main-content ${isMinimize === 'minimize' ? 'minimize-main' : ''}`}>
-                    <div className="page-content">
+                    <div className={userType === "company-administrator" ? "page-content company-admin" : "page-content"}>
                         <div className="container-fluid">
                             <div className="row">
                                 <div className="col-12">

@@ -51,7 +51,7 @@ export const MapLeaflet = ({ stops, coordinates }) => {
     const asyncFunc = async () => {
       if (mymap && L && !cancel) {
         const addMarker = (coor, isFirst = false) => {
-          const { id, iconDeg, label, position, odometr } = coor;
+          const { id, iconDeg, label, position, odometer } = coor;
           let options = {
             riseOnHover: true,
             icon: L.icon({
@@ -80,8 +80,8 @@ export const MapLeaflet = ({ stops, coordinates }) => {
               value: 'N/A',
             },
             {
-              title: "Odometr: ",
-              value: odometr,
+              title: "Odometer: ",
+              value: odometer,
             },
             {
               title: "Date: ",
